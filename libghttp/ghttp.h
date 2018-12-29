@@ -254,6 +254,33 @@ ghttp_set_proxy_authinfo(ghttp_request *a_request,
 			 const char *a_user,
 			 const char *a_pass);
 
+/* some SSL hooks */
+
+#ifdef USE_SSL
+#include <openssl/x509.h>
+
+typedef int (* ghttp_ssl_cert_cb)(ghttp_request *a_request, 
+                                  X509 *certificate, 
+                                  void * user_data);
+#else
+typedef int (* ghttp_ssl_cert_cb)(ghttp_request *a_request, 
+                                  void *certificate, 
+                                  void * user_data);
+#endif
+
+void ghttp_set_ssl_certificate_callback(ghttp_request *a_request,
+                                        ghttp_ssl_cert_cb callback, 
+                                        void * user_data);
+
+/* Attempt to enable SSL for this request.
+ * If gnome-http was built without SSL support, this always returns -1.
+ */
+int ghttp_enable_ssl(ghttp_request *a_request);
+
+/* Disable SSL for this request.  (This is the default.)
+ * If gnome-http was built without SSL support, this always returns -1.
+ */
+int ghttp_disable_ssl(ghttp_request *a_request);
 
 #ifdef __cplusplus
 }

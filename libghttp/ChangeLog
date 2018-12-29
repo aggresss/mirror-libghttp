@@ -1,3 +1,63 @@
+2001-06-18  Robey Pointer  <robey@lag.net>
+
+	* MAINTAINERS:
+
+	Added myself.
+
+2001-05-12  Robey Pointer  <robey@lag.net>
+
+	* http_req.c: (http_req_send):
+
+	Christian Marillat pointed out that using %f to read/write the
+	HTTP version number is locale-dependent.  Switched to using a %d
+	format.  The HTTP version is still stored internally as a float,
+	which is bad because of potential rounding issues, but we can deal
+	with that later.
+
+2001-04-18  Robey Pointer  <robey@eazel.com>
+
+	* test_client.c: (main):
+	* test_client_old.c: (main), (test_uri_parser), (test_date_parser):
+
+	Replace old test_client with one that actually uses the ghttp API,
+	and make it try out the SSL stuff.
+
+2001-04-18  Robey Pointer  <robey@eazel.com>
+
+	* configure.in:
+	* ghttp.c: (ghttp_enable_ssl), (ghttp_disable_ssl),
+	(ghttp_set_ssl_certificate_callback):
+	* ghttp.h:
+	* http_trans.c: (http_trans_read_into_buf):
+	* http_uri.c: (http_uri_parse):
+	
+	Modified the SSL support a little bit to include -lcrypto since
+	that's needed by openSSL now.  Moved ghttp_ssl.h into ghttp.h so
+	that an application can always try ghttp_enable_ssl, but it will
+	always return -1 if gnome-http was built without SSL support.  Fix
+	small bug in trans_read that wouldn't notice when an SSL
+	connection hit EOF.  Mark all https: URIs as invalid when SSL
+	support is off.
+	
+2001-04-18  Bill Gribble  <grib@billgribble.com>
+
+	* configure.in:
+	* ghttp.c: (ghttp_request_new), (ghttp_request_destroy),
+	(ghttp_set_uri), (ghttp_prepare), (ghttp_process), (ghttp_close),
+	(ghttp_set_proxy_authinfo):
+	* ghttp.h:
+	* http_trans.c: (http_trans_connect), (http_trans_conn_new),
+	(http_trans_conn_destroy), (http_trans_conn_close),
+	(http_trans_conn_set_ssl), (http_trans_read_into_buf),
+	(http_trans_write_buf):
+	* http_trans.h:
+	* http_uri.c: (http_uri_parse):
+
+	Add SSL support.  enable with --enable-ssl arg to configure.
+	SSL must be enabled on a per-request basis with ghttp_enable_ssl
+	and you must provide a certificate-verification callback with
+	ghttp_set_ssl_certificate_callback for ssl-enabled connections.
+
 2001-01-17  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: J Shane Culpepper  <pepper@eazel.com>

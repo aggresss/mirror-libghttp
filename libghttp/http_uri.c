@@ -58,6 +58,15 @@ http_uri_parse(char *a_string,
     a_uri->proto = (char *)malloc(l_start_string - a_string + 1);
     memcpy(a_uri->proto, a_string, (l_start_string - a_string));
     a_uri->proto[l_start_string - a_string] = '\0';
+    
+    /* change default port for secure connections */
+    if(!strcmp(a_uri->proto, "https")) {
+#ifdef USE_SSL
+      a_uri->port = 443; 
+#else
+      goto ec;
+#endif
+    }
   }
   /* check to make sure it starts with "http://" */
   if (strncmp(l_start_string, "://", 3) != 0)
