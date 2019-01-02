@@ -1,0 +1,3 @@
+[submodule "third_party/pld-linux/libghttp"]
+	path = third_party/pld-linux/libghttp
+	url = https://github.com/pld-linux/libghttp

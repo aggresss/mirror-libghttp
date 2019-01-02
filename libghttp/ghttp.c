@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 #include "ghttp.h"
 #include "http_uri.h"
 #include "http_hdrs.h"
@@ -48,7 +49,15 @@ struct _ghttp_request
   char               *proxy_username;
   char               *proxy_password;
   char               *proxy_authtoken;
+  int                 secure_uri;
+  int                 ssl_allowed;
+#ifdef USE_SSL
+  ghttp_ssl_cert_cb   cert_cb;
+  void               *cert_cb_data;
+#endif
 };
+
+
 
 static const char *basic_header = "Basic ";
 
@@ -65,6 +74,8 @@ ghttp_request_new(void)
   l_return->req = http_req_new();
   l_return->resp = http_resp_new();
   l_return->conn = http_trans_conn_new();
+  l_return->secure_uri = 0;
+  l_return->ssl_allowed = 0;
   return l_return;
 }
 
@@ -76,9 +87,9 @@ ghttp_request_destroy(ghttp_request *a_request)
   /* make sure that the socket was shut down. */
   if (a_request->conn->sock >= 0)
     {
-      close(a_request->conn->sock);
-      a_request->conn->sock = -1;
+      http_trans_conn_close(a_request->conn);
     }
+  
   /* destroy everything else */
   if (a_request->uri)
     http_uri_destroy(a_request->uri);
@@ -179,6 +190,14 @@ ghttp_set_uri(ghttp_request *a_request, char *a_uri)
 	  http_uri_destroy(a_request->uri);
 	  a_request->uri = l_new_uri;
 	}
+
+#ifdef USE_SSL
+      if (!strcmp(a_request->uri->proto, "https") &&
+          a_request->ssl_allowed)
+        {
+          a_request->secure_uri = 1;
+        }
+#endif
     }
   return 0;
 }
@@ -302,15 +321,18 @@ ghttp_prepare(ghttp_request *a_request)
 {
   /* only allow http requests if no proxy has been set */
   if (!a_request->proxy->host && a_request->uri->proto &&
-      strcmp(a_request->uri->proto, "http"))
+      strcmp(a_request->uri->proto, "http") &&
+      strcmp(a_request->uri->proto, "https"))        
     return 1;
+  
   /* check to see if we have to set up the
      host information */
   if ((a_request->conn->host == NULL) ||
       (a_request->conn->host != a_request->uri->host) ||
       (a_request->conn->port != a_request->uri->port) ||
+      (a_request->conn->use_ssl != a_request->secure_uri) ||
       (a_request->conn->proxy_host != a_request->proxy->host) ||
-      (a_request->conn->proxy_port != a_request->proxy->port))
+      (a_request->conn->proxy_port != a_request->proxy->port)) 
     {
       /* reset everything. */
       a_request->conn->host = a_request->uri->host;
@@ -320,11 +342,12 @@ ghttp_prepare(ghttp_request *a_request)
       a_request->conn->proxy_host = a_request->proxy->host;
       a_request->conn->proxy_port = a_request->proxy->port;
       a_request->conn->hostinfo = NULL;
+      http_trans_conn_set_ssl(a_request->conn, a_request->secure_uri);
+      
       /* close the socket if it looks open */
       if (a_request->conn->sock >= 0)
 	{
-	  close(a_request->conn->sock);
-	  a_request->conn->sock = -1;
+          http_trans_conn_close(a_request->conn);
 	  a_request->connected = 0;
 	}
     }
@@ -362,7 +385,7 @@ ghttp_prepare(ghttp_request *a_request)
 }
 
 ghttp_status
-ghttp_process(ghttp_request *a_request)
+ghttp_process (ghttp_request *a_request)
 {
   int l_rv = 0;
 
@@ -380,7 +403,27 @@ ghttp_process(ghttp_request *a_request)
 		a_request->errstr = http_trans_get_host_error(h_errno);
 	      return ghttp_error;
 	    }
-	  a_request->connected = 1;
+#ifdef USE_SSL 
+          /* call callback to verify certificate if it's an SSL connection*/
+          if(a_request->conn->use_ssl) 
+            { 
+              if(a_request->conn->ssl_cert &&
+                 ((a_request->cert_cb == NULL) ||
+                  (*a_request->cert_cb)(a_request, a_request->conn->ssl_cert, 
+                                        a_request->cert_cb_data))) 
+                {
+                  a_request->connected = 1;     
+                }
+              else 
+                {
+                  return ghttp_error;
+                }
+            }
+          else 
+            a_request->connected = 1;
+#else 
+          a_request->connected = 1;
+#endif	  
 	}
       l_rv = http_req_send(a_request->req, a_request->conn);
       if (l_rv == HTTP_TRANS_ERR)
@@ -486,11 +529,9 @@ ghttp_close(ghttp_request *a_request)
 {
   if (!a_request)
     return -1;
-  if (a_request->conn->sock >= 0)
-    {
-      close(a_request->conn->sock);
-      a_request->conn->sock = -1;
-    }
+
+  http_trans_conn_close(a_request->conn);
+
   a_request->connected = 0;
   return 0;
 }
@@ -760,4 +801,37 @@ ghttp_set_proxy_authinfo(ghttp_request *a_request,
   a_request->proxy_authtoken = l_final_auth;
   
   return 0;
+}
+
+int
+ghttp_enable_ssl(ghttp_request *a_request) {
+#ifdef USE_SSL 
+  if(!a_request) return -1;
+  a_request->ssl_allowed = 1;
+  return 0;
+#else
+  return -1;
+#endif
+}
+
+int
+ghttp_disable_ssl(ghttp_request *a_request) {
+#ifdef USE_SSL 
+  if(!a_request) return -1;
+  a_request->ssl_allowed = 0;
+  return 0;
+#else
+  return -1;
+#endif
+}
+
+void
+ghttp_set_ssl_certificate_callback(ghttp_request     *a_request,
+                                   ghttp_ssl_cert_cb callback,
+                                   void              *user_data) 
+{
+#ifdef USE_SSL
+  a_request->cert_cb      = callback;
+  a_request->cert_cb_data = user_data;
+#endif
 }

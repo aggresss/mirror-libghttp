@@ -27,9 +27,18 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
+#ifdef USE_SSL
+#include <openssl/crypto.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#endif
+
 typedef enum http_trans_err_type_tag {
   http_trans_err_type_host = 0,
-  http_trans_err_type_errno
+  http_trans_err_type_errno,
+  http_trans_err_type_ssl
 } http_trans_err_type;
 
 typedef struct http_trans_conn_tag {
@@ -53,6 +62,14 @@ typedef struct http_trans_conn_tag {
   int                  last_read;         /* the size of the last read */
   int                  chunk_len;         /* length of a chunk. */
   char                *errstr;            /* a hint as to an error */
+
+  /* SSL support. we always have a use_ssl var, even if compiled
+   * without SSL; it's just always FALSE unless SSL is compiled in. */
+  int                  use_ssl;          
+#ifdef USE_SSL
+  SSL                 *ssl_conn;
+  X509                *ssl_cert;
+#endif
 } http_trans_conn;
 
 http_trans_conn *
@@ -62,6 +79,9 @@ void
 http_trans_conn_destroy(http_trans_conn *a_conn);
 
 void
+http_trans_conn_close(http_trans_conn *a_conn);
+
+void
 http_trans_buf_reset(http_trans_conn *a_conn);
 
 void
@@ -69,6 +89,9 @@ http_trans_buf_clip(http_trans_conn *a_conn, char *a_clip_to);
 
 int
 http_trans_connect(http_trans_conn *a_conn);
+
+void
+http_trans_conn_set_ssl(http_trans_conn * a_conn, int use_ssl);
 
 const char *
 http_trans_get_host_error(int a_herror);

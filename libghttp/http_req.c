@@ -108,6 +108,7 @@ http_req_send(http_req *a_req, http_trans_conn *a_conn)
   int         l_headers_len = 0;
   int         l_rv = 0;
   char       *l_content = NULL;
+  int         l_ver_major, l_ver_minor;
 
   /* see if we need to jump into the function somewhere */
   if (a_conn->sync == HTTP_TRANS_ASYNC)
@@ -125,21 +126,25 @@ http_req_send(http_req *a_req, http_trans_conn *a_conn)
   memset(l_request, 0, 30 + strlen(a_req->resource) + (a_conn->proxy_host ?
 						       (strlen(a_req->host) + 20) : 0));
   /* copy it into the buffer */
+  l_ver_major = (int)a_req->http_ver;
+  l_ver_minor = ((int)(a_req->http_ver*10.0)) % 10;
   if (a_conn->proxy_host)
     {
       l_request_len = sprintf(l_request,
-			      "%s %s HTTP/%01.1f\r\n",
+			      "%s %s HTTP/%d.%d\r\n",
 			      http_req_type_char[a_req->type],
 			      a_req->full_uri,
-			      a_req->http_ver);
+			      l_ver_major,
+                              l_ver_minor);
     }
   else
     {
       l_request_len = sprintf(l_request,
-			      "%s %s HTTP/%01.1f\r\n",
+			      "%s %s HTTP/%d.%d\r\n",
 			      http_req_type_char[a_req->type],
 			      a_req->resource,
-			      a_req->http_ver);
+                              l_ver_major,
+                              l_ver_minor);
     }
   /* set the request in the connection buffer */
   http_trans_append_data_to_buf(a_conn, l_request, l_request_len);
