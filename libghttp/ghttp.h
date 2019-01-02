@@ -96,8 +96,12 @@ ghttp_uri_validate(char *a_uri);
  * This will return -1 if the uri is invalid
  */
 
+int ghttp_is_timeout(ghttp_request *a_request);
+void ghttp_set_timeout(ghttp_request *a_request, int nTimeoutInSecond);
+void ghttp_set_global_cert_file_path(const char *file, const char *path);
+
 int
-ghttp_set_uri(ghttp_request *a_request, char *a_uri);
+ghttp_set_uri(ghttp_request *a_request, const char *a_uri);
 
 /* Set a proxy for a request
  * This will return -1 if the uri is invalid
@@ -119,7 +123,10 @@ ghttp_set_type(ghttp_request *a_request, ghttp_type a_type);
  */
 
 int
-ghttp_set_body(ghttp_request *a_request, char *a_body, int a_len);
+ghttp_set_body(ghttp_request *a_request, const char *a_body, int a_len);
+        
+int ghttp_set_body3(ghttp_request *a_request, const char *a_body, int a_len,
+                    const char *a1_body, int a1_len, const char *a2_body, int a2_len);
 
 /* Set whether or not you want to use sync or async mode.
  */
@@ -271,16 +278,6 @@ typedef int (* ghttp_ssl_cert_cb)(ghttp_request *a_request,
 void ghttp_set_ssl_certificate_callback(ghttp_request *a_request,
                                         ghttp_ssl_cert_cb callback, 
                                         void * user_data);
-
-/* Attempt to enable SSL for this request.
- * If gnome-http was built without SSL support, this always returns -1.
- */
-int ghttp_enable_ssl(ghttp_request *a_request);
-
-/* Disable SSL for this request.  (This is the default.)
- * If gnome-http was built without SSL support, this always returns -1.
- */
-int ghttp_disable_ssl(ghttp_request *a_request);
 
 #ifdef __cplusplus
 }

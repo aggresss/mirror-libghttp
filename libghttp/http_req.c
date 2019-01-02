@@ -86,10 +86,12 @@ http_req_prepare(http_req *a_req)
       (a_req->type == http_req_type_put) ||
       (a_req->type == http_req_type_trace))
     {
-      sprintf(l_buf, "%d", a_req->body_len);
+      if (a_req->body_len > 0) {
+      sprintf(l_buf, "%d", a_req->body_len+a_req->body1_len+a_req->body2_len);
       http_hdr_set_value(a_req->headers,
 			 http_hdr_Content_Length,
 			 l_buf);
+      }
     }
   /* if the user agent isn't set then set a default */
   if (http_hdr_get_value(a_req->headers, http_hdr_User_Agent) == NULL)
@@ -108,7 +110,6 @@ http_req_send(http_req *a_req, http_trans_conn *a_conn)
   int         l_headers_len = 0;
   int         l_rv = 0;
   char       *l_content = NULL;
-  int         l_ver_major, l_ver_minor;
 
   /* see if we need to jump into the function somewhere */
   if (a_conn->sync == HTTP_TRANS_ASYNC)
@@ -126,25 +127,21 @@ http_req_send(http_req *a_req, http_trans_conn *a_conn)
   memset(l_request, 0, 30 + strlen(a_req->resource) + (a_conn->proxy_host ?
 						       (strlen(a_req->host) + 20) : 0));
   /* copy it into the buffer */
-  l_ver_major = (int)a_req->http_ver;
-  l_ver_minor = ((int)(a_req->http_ver*10.0)) % 10;
   if (a_conn->proxy_host)
     {
       l_request_len = sprintf(l_request,
-			      "%s %s HTTP/%d.%d\r\n",
+			      "%s %s HTTP/%01.1f\r\n",
 			      http_req_type_char[a_req->type],
 			      a_req->full_uri,
-			      l_ver_major,
-                              l_ver_minor);
+			      a_req->http_ver);
     }
   else
     {
       l_request_len = sprintf(l_request,
-			      "%s %s HTTP/%d.%d\r\n",
+			      "%s %s HTTP/%01.1f\r\n",
 			      http_req_type_char[a_req->type],
 			      a_req->resource,
-                              l_ver_major,
-                              l_ver_minor);
+			      a_req->http_ver);
     }
   /* set the request in the connection buffer */
   http_trans_append_data_to_buf(a_conn, l_request, l_request_len);
@@ -207,9 +204,18 @@ http_req_send(http_req *a_req, http_trans_conn *a_conn)
   if (l_content)
     {
       /* append the information to the buffer */
+            /*
       http_trans_append_data_to_buf(a_conn, a_req->body, a_req->body_len);
+      if (a_req->body1)
+        http_trans_append_data_to_buf(a_conn, a_req->body1, a_req->body1_len);
+      if (a_req->body2)
+        http_trans_append_data_to_buf(a_conn, a_req->body2, a_req->body2_len);
+             */
       a_req->state = http_req_state_sending_body;
     http_req_state_sending_body_jump:
+            if (a_conn->sync == HTTP_TRANS_ASYNC)
+            {
+                    
       do {
 	l_rv = http_trans_write_buf(a_conn);
 	if ((a_conn->sync == HTTP_TRANS_ASYNC) && (l_rv == HTTP_TRANS_NOT_DONE))
@@ -219,6 +225,44 @@ http_req_send(http_req *a_req, http_trans_conn *a_conn)
       } while (l_rv == HTTP_TRANS_NOT_DONE);
       /* reset the buffer */
       http_trans_buf_reset(a_conn);
+                    
+    }else {
+            
+            const char *dataArr[3];
+            int dataLens[3];
+            dataArr[0] = a_req->body;
+            dataArr[1] = a_req->body1;
+            dataArr[2] = a_req->body2;
+            dataLens[0] = a_req->body_len;
+            dataLens[1] = a_req->body1_len;
+            dataLens[2] = a_req->body2_len;
+            
+            char *io_buf= a_conn->io_buf;
+            int io_buf_len = a_conn->io_buf_len;
+            int io_buf_alloc = a_conn->io_buf_alloc;
+            int io_buf_io_done = a_conn->io_buf_io_done;
+            int io_buf_io_left = a_conn->io_buf_io_left;
+            int i;
+            for (i = 0; i < 3; i++) {
+                    if (dataArr[i]) {
+                            a_conn->io_buf = (char *)dataArr[i];
+                            a_conn->io_buf_len = dataLens[i];
+                            a_conn->io_buf_alloc = dataLens[i];
+                            a_conn->io_buf_io_left = dataLens[i];
+                            a_conn->io_buf_io_done = 0;
+                            do {
+                                    l_rv = http_trans_write_buf(a_conn);
+                                    if ((l_rv == HTTP_TRANS_DONE) && (a_conn->last_read == 0))
+                                            return HTTP_TRANS_ERR;
+                            } while (l_rv == HTTP_TRANS_NOT_DONE);
+                    }
+            }
+            a_conn->io_buf = io_buf;
+            a_conn->io_buf_len = io_buf_len;
+            a_conn->io_buf_alloc = io_buf_alloc;
+            a_conn->io_buf_io_left = io_buf_io_left;
+            a_conn->io_buf_io_done = io_buf_io_left;
+      }
     }
   return HTTP_TRANS_DONE;
 }

@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "ghttp.h"
 #include "http_uri.h"
@@ -50,7 +51,7 @@ struct _ghttp_request
   char               *proxy_password;
   char               *proxy_authtoken;
   int                 secure_uri;
-  int                 ssl_allowed;
+  int                 nTimeoutInSecond;
 #ifdef USE_SSL
   ghttp_ssl_cert_cb   cert_cb;
   void               *cert_cb_data;
@@ -68,15 +69,46 @@ ghttp_request_new(void)
 
   /* create everything */
   l_return = malloc(sizeof(struct _ghttp_request));
+  if (l_return == NULL) {
+    return l_return;
+  }
   memset(l_return, 0, sizeof(struct _ghttp_request));
   l_return->uri = http_uri_new();
   l_return->proxy = http_uri_new();
   l_return->req = http_req_new();
   l_return->resp = http_resp_new();
-  l_return->conn = http_trans_conn_new();
+  l_return->nTimeoutInSecond = 10;
+  l_return->conn = http_trans_conn_new(l_return->nTimeoutInSecond);
   l_return->secure_uri = 0;
-  l_return->ssl_allowed = 0;
   return l_return;
+}
+
+void ghttp_set_timeout(ghttp_request *a_request, int nTimeoutInSecond)
+{
+  a_request->nTimeoutInSecond = nTimeoutInSecond;
+  a_request->conn->nTimeoutInSecond = nTimeoutInSecond;
+}
+
+int ghttp_is_timeout(ghttp_request *a_request)
+{
+	switch(a_request->conn->error_type) {
+		//case http_trans_err_type_host:
+		case http_trans_err_type_errno:
+			if (a_request->conn->error == EAGAIN || a_request->conn->error == EWOULDBLOCK)
+				return 1;
+			else
+				return 0;
+#ifdef USE_SSL
+		case http_trans_err_type_ssl:
+			if (a_request->conn->error==SSL_ERROR_WANT_READ || a_request->conn->error==SSL_ERROR_WANT_WRITE)
+				return 1;
+			else
+				return 0;
+#endif
+		default:
+			break;
+	}
+	return 0;
 }
 
 void
@@ -148,7 +180,7 @@ ghttp_uri_validate(char *a_uri)
 }
 
 int
-ghttp_set_uri(ghttp_request *a_request, char *a_uri)
+ghttp_set_uri(ghttp_request *a_request, const char *a_uri)
 {
   int l_rv = 0;
   http_uri *l_new_uri = NULL;
@@ -192,8 +224,7 @@ ghttp_set_uri(ghttp_request *a_request, char *a_uri)
 	}
 
 #ifdef USE_SSL
-      if (!strcmp(a_request->uri->proto, "https") &&
-          a_request->ssl_allowed)
+      if (!strcmp(a_request->uri->proto, "https"))
         {
           a_request->secure_uri = 1;
         }
@@ -280,7 +311,7 @@ ghttp_set_type(ghttp_request *a_request, ghttp_type a_type)
 }
 
 int
-ghttp_set_body(ghttp_request *a_request, char *a_body, int a_len)
+ghttp_set_body(ghttp_request *a_request, const char *a_body, int a_len)
 {
   /* check to make sure the request is there */
   if (!a_request)
@@ -299,6 +330,31 @@ ghttp_set_body(ghttp_request *a_request, char *a_body, int a_len)
   a_request->req->body = a_body;
   a_request->req->body_len = a_len;
   return 0;
+}
+
+int ghttp_set_body3(ghttp_request *a_request, const char *a_body, int a_len,
+                    const char *a1_body, int a1_len, const char *a2_body, int a2_len) {
+        /* check to make sure the request is there */
+        if (!a_request)
+                return -1;
+        /* check to make sure the body is there */
+        if ((a_len > 0) && (a_body == NULL))
+                return -1;
+        /* check to make sure that it makes sense */
+        if ((a_request->req->type != http_req_type_post) &&
+            (a_request->req->type != http_req_type_put) &&
+            (a_request->req->type != http_req_type_proppatch) &&
+            (a_request->req->type != http_req_type_propfind) &&
+            (a_request->req->type != http_req_type_lock))
+                return -1;
+        /* set the variables */
+        a_request->req->body = a_body;
+        a_request->req->body_len = a_len;
+        a_request->req->body1 = a1_body;
+        a_request->req->body1_len = a1_len;
+        a_request->req->body2 = a2_body;
+        a_request->req->body2_len = a2_len;
+        return 0;
 }
 
 int
@@ -341,8 +397,8 @@ ghttp_prepare(ghttp_request *a_request)
       a_request->conn->port = a_request->uri->port;
       a_request->conn->proxy_host = a_request->proxy->host;
       a_request->conn->proxy_port = a_request->proxy->port;
-      a_request->conn->hostinfo = NULL;
-      http_trans_conn_set_ssl(a_request->conn, a_request->secure_uri);
+      if (a_request->secure_uri && http_trans_conn_set_ssl(a_request->conn, a_request->secure_uri) != 0)
+          return HTTP_TRANS_ERR;
       
       /* close the socket if it looks open */
       if (a_request->conn->sock >= 0)
@@ -400,7 +456,7 @@ ghttp_process (ghttp_request *a_request)
 	      if (a_request->conn->error_type == http_trans_err_type_errno)
 		a_request->errstr = strerror(a_request->conn->error);
 	      else if(a_request->conn->error_type == http_trans_err_type_host)
-		a_request->errstr = http_trans_get_host_error(h_errno);
+		a_request->errstr = gai_strerror(a_request->conn->error);
 	      return ghttp_error;
 	    }
 #ifdef USE_SSL 
@@ -582,9 +638,24 @@ ghttp_get_header_names(ghttp_request *a_request,
 const char *
 ghttp_get_error(ghttp_request *a_request)
 {
-  if (a_request->errstr == NULL)
+  if (a_request->errstr)
+      return a_request->errstr;
+
+    switch(a_request->conn->error_type) {
+        case http_trans_err_type_errno:
+            a_request->errstr = strerror(a_request->conn->error);
+            return a_request->errstr;
+            if (a_request->conn->error == EAGAIN || a_request->conn->error == EWOULDBLOCK)
+#ifdef USE_SSL
+        case http_trans_err_type_ssl:
+            a_request->errstr = ERR_reason_error_string(a_request->conn->error);
+            return a_request->errstr;
+#endif
+	default:
+	    break;
+    }
+
     return "Unknown Error.";
-  return a_request->errstr;
 }
 
 time_t
@@ -801,28 +872,6 @@ ghttp_set_proxy_authinfo(ghttp_request *a_request,
   a_request->proxy_authtoken = l_final_auth;
   
   return 0;
-}
-
-int
-ghttp_enable_ssl(ghttp_request *a_request) {
-#ifdef USE_SSL 
-  if(!a_request) return -1;
-  a_request->ssl_allowed = 1;
-  return 0;
-#else
-  return -1;
-#endif
-}
-
-int
-ghttp_disable_ssl(ghttp_request *a_request) {
-#ifdef USE_SSL 
-  if(!a_request) return -1;
-  a_request->ssl_allowed = 0;
-  return 0;
-#else
-  return -1;
-#endif
 }
 
 void
