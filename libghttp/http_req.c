@@ -25,6 +25,13 @@
 #include "http_trans.h"
 #include "http_global.h"
 
+#include "version.h"
+#ifndef LINK_SDK_VERSION
+#error "must define LINK_SDK_VERSION"
+#else
+const char *gVersionAgent = LINK_SDK_VERSION;
+#endif
+
 const char *
 http_req_type_char[] = {
   "GET",
@@ -96,7 +103,7 @@ http_req_prepare(http_req *a_req)
   /* if the user agent isn't set then set a default */
   if (http_hdr_get_value(a_req->headers, http_hdr_User_Agent) == NULL)
     http_hdr_set_value(a_req->headers, http_hdr_User_Agent,
-		       "libghttp/1.0");
+		       gVersionAgent);
   return l_return;
 }
 
