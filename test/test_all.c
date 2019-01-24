@@ -5,6 +5,7 @@
 
 
 extern CuSuite *test_http();
+extern CuSuite *test_https();
 
 
 static const struct testlist {
@@ -12,6 +13,7 @@ static const struct testlist {
     CuSuite *(*func)();
 } tests[] = {
     {"test_http", test_http},
+    {"test_https", test_https},
     {"LastTest", NULL}
 };
 

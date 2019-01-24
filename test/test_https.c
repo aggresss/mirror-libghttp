@@ -3,14 +3,13 @@
 #include "libghttp/ghttp.h"
 #include "CuTest/CuTest.h"
 
-void test_http_setup(CuTest *tc)
+void test_https_setup(CuTest *tc)
 {
 
 }
 
 
-void test_http_get(CuTest *tc)
-
+void test_https_get(CuTest *tc)
 {
     char *uri = "http://kodo.router7.com/index.html";
     ghttp_request *request = NULL;
@@ -35,19 +34,20 @@ void test_http_get(CuTest *tc)
 }
 
 
-void test_http_cleanup(CuTest *tc)
+void test_https_cleanup(CuTest *tc)
 {
 
 }
+
 
 
 CuSuite *test_http(CuTest *tc)
 {
         CuSuite* suite = CuSuiteNew();
 
-        SUITE_ADD_TEST(suite, (void*)test_http_setup);
-        SUITE_ADD_TEST(suite, (void*)test_http_get);
-        SUITE_ADD_TEST(suite, (void*)test_http_cleanup);
+        SUITE_ADD_TEST(suite, (void*)test_https_setup);
+        SUITE_ADD_TEST(suite, (void*)test_https_get);
+        SUITE_ADD_TEST(suite, (void*)test_https_cleanup);
 
         return suite;
 }
