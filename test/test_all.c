@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "CuTest.h"
+#include "CuTest/CuTest.h"
 
 
 extern CuSuite *test_http();

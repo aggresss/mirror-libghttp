@@ -2,6 +2,7 @@
 CC = gcc
 CFLAGS = -g
 OBJS = $(patsubst %c, %o, $(wildcard *.c))
+OBJS += $(patsubst %c, %o, $(wildcard CuTest/*.c))
 
 PATH_REPO=$(shell git rev-parse --show-toplevel)
 PATH_PWD=$(shell pwd)
@@ -28,8 +29,8 @@ $(Target):$(OBJS)
 
 .PHONY:clean
 clean:
-	rm -rf *.o *.out $(Target) $(DEPS)
+	rm -rf CuTest/*.o *.o *.out $(Target) $(DEPS)
 
 .PHONY:distclean
-distclean:
-	rm -rf *.o *.out $(Target) $(DEPS) libghttp/
+distclean: clean
+	rm -rf libghttp/

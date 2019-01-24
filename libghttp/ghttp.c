@@ -223,7 +223,7 @@ ghttp_set_uri(ghttp_request *a_request, const char *a_uri)
 	  a_request->uri = l_new_uri;
 	}
 
-#ifdef USE_SSL
+#if ((defined USE_SSL) || (defined USE_WOLFSSL))
       if (!strcmp(a_request->uri->proto, "https"))
         {
           a_request->secure_uri = 1;

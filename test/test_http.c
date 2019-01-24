@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "ghttp.h"
-#include "CuTest.h"
+#include "CuTest/CuTest.h"
 
 void test_http_setup(CuTest *tc)
 {
