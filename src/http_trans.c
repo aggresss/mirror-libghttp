@@ -30,6 +30,7 @@
 
 #include "http_trans.h"
 #include "http_global.h"
+#include "http_config.h"
 
 #ifdef USE_OPENSSL
 #include <openssl/crypto.h>

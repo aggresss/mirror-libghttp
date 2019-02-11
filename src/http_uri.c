@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "http_uri.h"
+#include "http_config.h"
 
 typedef enum uri_parse_state_tag
 {

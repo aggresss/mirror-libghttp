@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "http_hdrs.h"
+#include "http_config.h"
 
 /* entity headers */
 

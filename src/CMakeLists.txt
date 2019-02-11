@@ -7,8 +7,8 @@ endif()
 
 # process config file
 configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/ghttp_config.h.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/ghttp_config.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/http_config.h.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/http_config.h"
 )
 if (NOT ${CMAKE_CURRENT_BINARY_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
     include_directories(${CMAKE_CURRENT_BINARY_DIR})

@@ -22,6 +22,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "http_date.h"
+#include "http_config.h"
 
 static int
 month_from_string_short(const char *a_month);

@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "http_config.h"
 
 const char b64_alphabet[65] = { 
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

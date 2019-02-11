@@ -24,7 +24,7 @@
 #include "http_req.h"
 #include "http_trans.h"
 #include "http_global.h"
-#include "ghttp_config.h"
+#include "http_config.h"
 
 #ifndef LIBGHTTP_VERSION
 const char *gVersionAgent = "version:nodefine";

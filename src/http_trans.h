@@ -26,6 +26,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include "http_config.h"
 
 #ifdef USE_OPENSSL
 #include <openssl/crypto.h>

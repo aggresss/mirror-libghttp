@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include "http_resp.h"
 #include "http_global.h"
+#include "http_config.h"
 
 typedef enum header_state_tag
 {
