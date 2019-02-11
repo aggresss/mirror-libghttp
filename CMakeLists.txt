@@ -8,13 +8,10 @@ project("libghttp" C)
 # Get and Display infomation
 message(STATUS "CMake version: " ${CMAKE_VERSION})
 message(STATUS "CMake system name: " ${CMAKE_SYSTEM_NAME})
-c_compiler_triplet(CMAKE_C_COMPILER_TRIPLET)
-if(CMAKE_C_COMPILER_TRIPLET)
-    message(STATUS "CMAKE_C_COMPILER_TRIPLET: ${CMAKE_C_COMPILER_TRIPLET}")
-endif()
-c_compiler_prefix(CMAKE_C_COMPILER_PREFIX)
-if(CMAKE_C_COMPILER_PREFIX)
-    message(STATUS "CMAKE_C_COMPILER_PREFIX: ${CMAKE_C_COMPILER_PREFIX}")
+
+c_compiler_prefix(C_COMPILER_PREFIX)
+if(C_COMPILER_PREFIX)
+    message(STATUS "C_COMPILER_PREFIX: " ${C_COMPILER_PREFIX})
 endif()
 
 # Version
@@ -63,5 +60,7 @@ set(CMAKE_C_FLAGS_CHECK       "-O0 -g3")
 
 # Subdirectory
 add_subdirectory(third_party)
+add_subdirectory(include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 add_subdirectory(src)
 

@@ -14,8 +14,6 @@ if (NOT ${CMAKE_CURRENT_BINARY_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
     include_directories(${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
 set(src_libghttp
     ghttp.c
     http_base64.c
@@ -26,15 +24,6 @@ set(src_libghttp
     http_trans.c
     http_uri.c
 )
-
-# export head file
-file(GLOB ghttp_headers
-    ghttp.h 
-    ghttp_constants.h
-)
-install(FILES ${ghttp_headers}
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ghttp
-        PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
 # build static target
 if(WITH_STATIC)
