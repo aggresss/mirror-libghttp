@@ -1,4 +1,5 @@
 # .gitignore for aggresss/libghttp
 build*/
 output*/
-
+/third_party/*
+!/third_party/CMakelists.txt

@@ -1,35 +1,33 @@
 cmake_minimum_required(VERSION 3.0)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake;${CMAKE_MODULE_PATH}")
+include(Utilities)
+include(GNUInstallDirs)
 
 project("libghttp" C)
 
-include(GNUInstallDirs)
-
+# Get and Display infomation
 message(STATUS "CMake version: " ${CMAKE_VERSION})
 message(STATUS "CMake system name: " ${CMAKE_SYSTEM_NAME})
+c_compiler_triplet(CMAKE_C_COMPILER_TRIPLET)
+if(CMAKE_C_COMPILER_TRIPLET)
+    message(STATUS "CMAKE_C_COMPILER_TRIPLET: ${CMAKE_C_COMPILER_TRIPLET}")
+endif()
+c_compiler_prefix(CMAKE_C_COMPILER_PREFIX)
+if(CMAKE_C_COMPILER_PREFIX)
+    message(STATUS "CMAKE_C_COMPILER_PREFIX: ${CMAKE_C_COMPILER_PREFIX}")
+endif()
 
 # Version
-SET(LIBGHTTP_VERSION_MAJOR 2)
-SET(LIBGHTTP_VERSION_MINOR 0)
-SET(LIBGHTTP_VERSION_PATCH 0)
-SET(LIBGHTTP_VERSION ${LIBGHTTP_VERSION_MAJOR}.${LIBGHTTP_VERSION_MINOR}.${LIBGHTTP_VERSION_PATCH})
+set(LIBGHTTP_VERSION_MAJOR 2)
+set(LIBGHTTP_VERSION_MINOR 0)
+set(LIBGHTTP_VERSION_PATCH 0)
+set(LIBGHTTP_VERSION ${LIBGHTTP_VERSION_MAJOR}.${LIBGHTTP_VERSION_MINOR}.${LIBGHTTP_VERSION_PATCH})
 message(STATUS "Libghttp version: " ${LIBGHTTP_VERSION})
 
 # SSL/TLS feature
 option(USE_WOLFSSL "Build libghttp WOLFSSL." OFF)
 option(USE_MBEDTLS "Build libghttp MBEDTLS." OFF)
 option(USE_OPENSSL "Build libghttp OPENSSL." OFF)
-
-# Returns a list of arguments that evaluate to true
-function(count_true output_count_var)
-    set(lst)
-    foreach(option_var IN LISTS ARGN)
-        if(${option_var})
-        list(APPEND lst ${option_var})
-        endif()
-    endforeach()
-    list(LENGTH lst lst_len)
-    set(${output_count_var} ${lst_len} PARENT_SCOPE)
-endfunction()
 
 count_true(ssl_options_count
     USE_WOLFSSL
@@ -64,5 +62,6 @@ set(CMAKE_C_FLAGS_COVERAGE    "-O0 -g3")
 set(CMAKE_C_FLAGS_CHECK       "-O0 -g3")
 
 # Subdirectory
+add_subdirectory(third_party)
 add_subdirectory(src)
 
