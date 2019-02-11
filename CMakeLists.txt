@@ -21,6 +21,14 @@ set(LIBGHTTP_VERSION_PATCH 0)
 set(LIBGHTTP_VERSION ${LIBGHTTP_VERSION_MAJOR}.${LIBGHTTP_VERSION_MINOR}.${LIBGHTTP_VERSION_PATCH})
 message(STATUS "Libghttp version: " ${LIBGHTTP_VERSION})
 
+# target static and shared
+option(WITH_STATIC "Build libghttp static library." ON)
+option(WITH_SHARED "Build libghttp shared library." OFF)
+
+if (NOT WITH_STATIC AND NOT WITH_SHARED)
+    message(FATAL_ERROR "Need to choose static or shared libghttp build!")
+endif()
+
 # SSL/TLS feature
 option(USE_WOLFSSL "Build libghttp WOLFSSL." OFF)
 option(USE_MBEDTLS "Build libghttp MBEDTLS." OFF)
@@ -59,7 +67,8 @@ set(CMAKE_C_FLAGS_COVERAGE    "-O0 -g3")
 set(CMAKE_C_FLAGS_CHECK       "-O0 -g3")
 
 # Subdirectory
-add_subdirectory(third_party)
+include(third_party/CMakeLists.txt)
+#add_subdirectory(third_party)
 add_subdirectory(include)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 add_subdirectory(src)
