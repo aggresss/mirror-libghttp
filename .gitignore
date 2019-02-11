@@ -1,17 +1,4 @@
 # .gitignore for aggresss/libghttp
-
-*.o
-*.lo
-*.la
-*.out
-
-/test/libghttp/
-
-libghttp/.libs/
-libghttp/config.cache
-libghttp/config.log
-libghttp/config.status
-libghttp/ghttpConf.sh
-libghttp/libtool
-libghttp/Makefile
+build*/
+output*/
 

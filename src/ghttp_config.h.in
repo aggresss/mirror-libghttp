@@ -1,0 +1,6 @@
+#ifndef __LIBGHTTP_CONFIG_H__
+#define __LIBGHTTP_CONFIG_H__
+
+#define LIBGHTTP_VERSION "@LIBGHTTP_VERSION@"
+
+#endif

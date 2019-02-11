@@ -24,12 +24,12 @@
 #include "http_req.h"
 #include "http_trans.h"
 #include "http_global.h"
+#include "ghttp_config.h"
 
-#include "version.h"
-#ifndef LINK_SDK_VERSION
-#error "must define LINK_SDK_VERSION"
+#ifndef LIBGHTTP_VERSION
+const char *gVersionAgent = "version:nodefine";
 #else
-const char *gVersionAgent = LINK_SDK_VERSION;
+const char *gVersionAgent = "version:" LIBGHTTP_VERSION;
 #endif
 
 const char *
