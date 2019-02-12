@@ -1,27 +1,27 @@
 include(ExternalProject)
 
 if(WITH_STATIC)
-    set(THIRDPARTY_STATIC, "--enable-static")
+    set(THIRDPARTY_WITH_STATIC, "yes")
 else()
-    set(THIRDPARTY_STATIC, "--disable-static")
+    set(THIRDPARTY_WITH_STATIC, "no")
 endif()
 
 if(WITH_SHARED)
-    set(THIRDPARTY_SHARED, "--enable-shared")
+    set(THIRDPARTY_WITH_SHARED, "yes")
 else()
-    set(THIRDPARTY_SHARED, "--disable-shared")
+    set(THIRDPARTY_WITH_SHARED, "no")
 endif()
 
 if(USE_WOLFSSL)
     ExternalProject_Add(wolfssl
         EXCLUDE_FROM_ALL TRUE
-        GIT_REPOSITORY https://github.com/wolfssl/wolfssl.git
+        GIT_REPOSITORY aggresss@link.router7.com:git/wolfssl
         GIT_TAG v3.15.7-stable
         SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/wolfssl
         CONFIGURE_COMMAND ./autogen.sh &&
             ./configure
-            --enable-static
-            --disable-shared
+            --enable-static=${THIRDPARTY_WITH_STATIC}
+            --enable-shared=${THIRDPARTY_WITH_SHARED}
             --disable-debug
             --host=${C_COMPILER_PREFIX}
             --prefix=${CMAKE_CURRENT_BINARY_DIR}/wolfssl/output
