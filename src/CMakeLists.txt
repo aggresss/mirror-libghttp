@@ -21,23 +21,20 @@ set(src_libghttp
 )
 
 if(USE_WOLFSSL)
-    set(external_libs wolfssl)
-    set(external_INCLUDE_DIRS ${wolfssl_INCLUDE_DIRS})
-    set(external_LIBRARIES ${wolfssl_LIBRARIES})
+    set(depends_external wolfssl)
+    include_directories(${wolfssl_INCLUDE_DIRS})
+    link_directories(${wolfssl_LIBRARIES})
 elseif(USE_MBEDTLS)
 
 elseif(USE_OPENSSL)
 
 endif()
 
-include_directories(${external_INCLUDE_DIRS})
-
 # build static target
 if(WITH_STATIC)
     add_library(ghttp_static STATIC ${src_libghttp})
     set_target_properties(ghttp_static PROPERTIES OUTPUT_NAME ghttp)
-    add_dependencies(ghttp_static ${external_libs})
-    target_link_libraries(ghttp_static ${external_LIBRARIES})
+    add_dependencies(ghttp_static ${depends_external})
 
     install(TARGETS ghttp_static
             DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -49,7 +46,7 @@ if(WITH_SHARED)
     add_library(ghttp_shared SHARED ${src_libghttp})
     set_target_properties(ghttp_shared PROPERTIES OUTPUT_NAME ghttp)
     set_target_properties(ghttp_shared PROPERTIES VERSION ${LIBGHTTP_VERSION} SOVERSION ${LIBGHTTP_VERSION_MAJOR})
-    target_link_libraries(ghttp_shared ${external_LIBRARIES})
+    add_dependencies(ghttp_shared ${depends_external})
 
     install(TARGETS ghttp_shared
             DESTINATION ${CMAKE_INSTALL_LIBDIR}

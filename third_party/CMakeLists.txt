@@ -15,21 +15,24 @@ endif()
 if(USE_WOLFSSL)
     ExternalProject_Add(wolfssl
         EXCLUDE_FROM_ALL TRUE
+        BUILD_IN_SOURCE TRUE
         GIT_REPOSITORY aggresss@link.router7.com:git/wolfssl
         GIT_TAG v3.15.7-stable
-        SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/wolfssl
+        GIT_PROGRESS TRUE
+        UPDATE_COMMAND ""
         CONFIGURE_COMMAND ./autogen.sh &&
             ./configure
             --enable-static=${THIRDPARTY_WITH_STATIC}
             --enable-shared=${THIRDPARTY_WITH_SHARED}
             --disable-debug
             --host=${C_COMPILER_PREFIX}
-            --prefix=${CMAKE_CURRENT_BINARY_DIR}/wolfssl/output
+            --prefix=${CMAKE_CURRENT_BINARY_DIR}/wolfssl
         BUILD_COMMAND make
-        BUILD_IN_SOURCE 1
-        INSTALL_COMMAND make install)
-    set(wolfssl_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/wolfssl/output/include PARENT_SCOPE)
-    set(wolfssl_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/wolfssl/output/lib PARENT_SCOPE)
+        INSTALL_COMMAND make install
+        TEST_COMMAND "")
+
+    set(wolfssl_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/wolfssl/include PARENT_SCOPE)
+    set(wolfssl_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/wolfssl/lib PARENT_SCOPE)
 elseif(USE_MBEDTLS)
 
 elseif(USE_OPENSSL)
