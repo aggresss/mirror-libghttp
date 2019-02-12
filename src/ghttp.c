@@ -24,7 +24,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "ghttp.h"
+#include <ghttp.h>
 #include "http_uri.h"
 #include "http_hdrs.h"
 #include "http_trans.h"

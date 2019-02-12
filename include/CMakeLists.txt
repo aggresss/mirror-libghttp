@@ -1,6 +1,6 @@
 # export head file
 file(GLOB ghttp_headers
-    ghttp.h 
+    ghttp.h
     ghttp_constants.h
 )
 install(FILES ${ghttp_headers}

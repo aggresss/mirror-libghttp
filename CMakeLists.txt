@@ -67,9 +67,7 @@ set(CMAKE_C_FLAGS_COVERAGE    "-O0 -g3")
 set(CMAKE_C_FLAGS_CHECK       "-O0 -g3")
 
 # Subdirectory
-include(third_party/CMakeLists.txt)
-#add_subdirectory(third_party)
+add_subdirectory(third_party)
 add_subdirectory(include)
-include_directories(${PROJECT_SOURCE_DIR}/include)
 add_subdirectory(src)
 
