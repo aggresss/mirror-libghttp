@@ -5,6 +5,9 @@ include(GNUInstallDirs)
 
 project("libghttp" C)
 
+add_definitions("-D__PROJECT__=\"[${CMAKE_PROJECT_NAME}]\"")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'")
+
 # Get and Display infomation
 message(STATUS "CMake version: " ${CMAKE_VERSION})
 message(STATUS "CMake system name: " ${CMAKE_SYSTEM_NAME})
@@ -38,15 +41,15 @@ count_true(ssl_options_count
     USE_WOLFSSL
     USE_MBEDTLS
     USE_OPENSSL
-)
+    )
 if(ssl_options_count GREATER "1")
     message(FATAL_ERROR "Only one ssl library can be selected when libghttp build!")
 endif()
 
 # Test 
-option(ENABLE_TESTING "Build libghttp tests." OFF)
+option(ENABLE_TESTING "Build libghttp tests." ON)
 
-if(${ENABLE_TESTING} STREQUAL ON)
+if(ENABLE_TESTING)
     enable_testing()
     add_subdirectory(tests)
 endif()
@@ -59,7 +62,8 @@ add_custom_target(apidoc
 # Build type
 set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE}
     CACHE STRING "Choose the type of build: None Debug Release Coverage Check"
-    FORCE)
+    FORCE
+    )
 
 set(CMAKE_C_FLAGS_RELEASE     "-O2")
 set(CMAKE_C_FLAGS_DEBUG       "-O0 -g3")

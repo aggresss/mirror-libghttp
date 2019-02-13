@@ -25,7 +25,8 @@ endfunction()
 # Returns the ${CMAKE_C_COMPILER} triplet
 function(c_compiler_triplet output_triplet)
     execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpmachine
-                    OUTPUT_VARIABLE compiler_triplet
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+        OUTPUT_VARIABLE compiler_triplet
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
     set(${output_triplet} ${compiler_triplet} PARENT_SCOPE)
 endfunction()
