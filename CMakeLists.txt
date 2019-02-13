@@ -42,16 +42,11 @@ count_true(ssl_options_count
     USE_MBEDTLS
     USE_OPENSSL
     )
+if(ssl_options_count EQUAL "1")
+    set(WITH_TLS ON)
+endif()
 if(ssl_options_count GREATER "1")
     message(FATAL_ERROR "Only one ssl library can be selected when libghttp build!")
-endif()
-
-# Test 
-option(ENABLE_TESTING "Build libghttp tests." ON)
-
-if(ENABLE_TESTING)
-    enable_testing()
-    add_subdirectory(tests)
 endif()
 
 # Document
@@ -74,3 +69,12 @@ set(CMAKE_C_FLAGS_CHECK       "-O0 -g3")
 add_subdirectory(third_party)
 add_subdirectory(include)
 add_subdirectory(src)
+
+# Test 
+option(ENABLE_TESTING "Build libghttp tests." ON)
+
+if(ENABLE_TESTING)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+

@@ -13,7 +13,7 @@ else()
 endif()
 
 if(USE_WOLFSSL)
-    ExternalProject_Add(wolfssl
+    ExternalProject_Add(external-wolfssl
         EXCLUDE_FROM_ALL TRUE
         BUILD_IN_SOURCE TRUE
         GIT_REPOSITORY aggresss@link.router7.com:git/wolfssl
