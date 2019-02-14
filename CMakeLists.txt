@@ -27,11 +27,13 @@ endif()
 # Default C / CXX flags
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_C_FLAGS
-        " -Wall -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' \
+        " -Wall \
+            -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' \
             -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' "
     )
     set(CMAKE_CXX_FLAGS
-        " -Wall -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' \
+        " -Wall \
+            -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' \
             -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' "
     )
 endif()
@@ -49,11 +51,13 @@ set(CMAKE_CXX_FLAGS_DEBUG
 
 set(CMAKE_C_FLAGS_RELEASE
     " -O3 -Wall \
-        -DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' "
+        -DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO \
+        -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' "
     )
 set(CMAKE_CXX_FLAGS_RELEASE
     " -O3 -Wall \
-        -DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' "
+        -DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO \
+        -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' "
     )
 
 set(CMAKE_C_FLAGS_COVERAGE " ${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
