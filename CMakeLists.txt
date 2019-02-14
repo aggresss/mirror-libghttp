@@ -5,8 +5,31 @@ include(GNUInstallDirs)
 
 project("libghttp" C)
 
-add_definitions("-D__PROJECT__=\"[${CMAKE_PROJECT_NAME}]\"")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'")
+# Build type
+set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE}
+    CACHE STRING "Choose the type of build: None Debug Release Coverage"
+    FORCE
+    )
+
+# Default C / CXX flags
+set(CMAKE_C_FLAGS
+    " -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'"
+    " -D__PROJECT__=\"[${CMAKE_PROJECT_NAME}]\""
+    )
+set(CMAKE_CXX_FLAGS
+    " -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'"
+    " -D__PROJECT__=\"[${CMAKE_PROJECT_NAME}]\""
+    )
+
+set(CMAKE_C_FLAGS_DEBUG ${CMAKE_C_FLAGS} " -g -ggdb -O0 -Wall ")
+set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS} " -g -ggdb -O0 -Wall ")
+
+set(CMAKE_C_FLAGS_RELEASE ${CMAKE_C_FLAGS} " -O3 -Wall" "-DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO")
+set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_C_FLAGS} " -O3 -Wall" "-DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO")
+
+set(CMAKE_C_FLAGS_COVERAGE " ${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS_COVERAGE " ${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
+
 
 # Get and Display infomation
 message(STATUS "CMake version: " ${CMAKE_VERSION})
@@ -53,17 +76,6 @@ endif()
 add_custom_target(apidoc
     COMMAND doxygen ghttp.doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc)
-
-# Build type
-set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE}
-    CACHE STRING "Choose the type of build: None Debug Release Coverage Check"
-    FORCE
-    )
-
-set(CMAKE_C_FLAGS_RELEASE     "-O2")
-set(CMAKE_C_FLAGS_DEBUG       "-O0 -g3")
-set(CMAKE_C_FLAGS_COVERAGE    "-O0 -g3")
-set(CMAKE_C_FLAGS_CHECK       "-O0 -g3")
 
 # Subdirectory
 add_subdirectory(third_party)
