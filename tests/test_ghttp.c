@@ -53,6 +53,8 @@ int main(int argc, const char * argv[])
     memset(&cmdArg, 0, sizeof(cmdArg));
     cmdArg.bTestHttpGet = false;
 
+    SetLogLevel(LOG_LEVEL_TRACE);
+
     flag_bool(&cmdArg.bTestHttpGet, "http_get", "test http get");
 
     flag_parse(argc, argv, "test libghttp");
