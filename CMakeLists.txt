@@ -12,14 +12,8 @@ set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE}
     )
 
 # Default C / CXX flags
-set(CMAKE_C_FLAGS
-    " -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'"
-    " -D__PROJECT__=\"[${CMAKE_PROJECT_NAME}]\""
-    )
-set(CMAKE_CXX_FLAGS
-    " -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'"
-    " -D__PROJECT__=\"[${CMAKE_PROJECT_NAME}]\""
-    )
+set(CMAKE_C_FLAGS " -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' ")
+set(CMAKE_CXX_FLAGS " -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' ")
 
 set(CMAKE_C_FLAGS_DEBUG ${CMAKE_C_FLAGS} " -g -ggdb -O0 -Wall ")
 set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS} " -g -ggdb -O0 -Wall ")
