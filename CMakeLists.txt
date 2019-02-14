@@ -5,11 +5,24 @@ include(GNUInstallDirs)
 
 project("libghttp" C)
 
+# Get and Display infomation
+message(STATUS "CMake version: " ${CMAKE_VERSION})
+message(STATUS "CMake system name: " ${CMAKE_SYSTEM_NAME})
+
+c_compiler_prefix(C_COMPILER_PREFIX)
+if(C_COMPILER_PREFIX)
+    message(STATUS "C_COMPILER_PREFIX: " ${C_COMPILER_PREFIX})
+endif()
+
 # Build type
 set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE}
     CACHE STRING "Choose the type of build: None Debug Release Coverage"
     FORCE
     )
+
+if(CMAKE_BUILD_TYPE)
+    message(STATUS "CMake build type: " ${CMAKE_BUILD_TYPE})
+endif()
 
 # Default C / CXX flags
 set(CMAKE_C_FLAGS " -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' ")
@@ -23,16 +36,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS} -O3 -Wall -DDEFAULT_LOG_LEVEL=LOG_
 
 set(CMAKE_C_FLAGS_COVERAGE " ${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
 set(CMAKE_CXX_FLAGS_COVERAGE " ${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
-
-
-# Get and Display infomation
-message(STATUS "CMake version: " ${CMAKE_VERSION})
-message(STATUS "CMake system name: " ${CMAKE_SYSTEM_NAME})
-
-c_compiler_prefix(C_COMPILER_PREFIX)
-if(C_COMPILER_PREFIX)
-    message(STATUS "C_COMPILER_PREFIX: " ${C_COMPILER_PREFIX})
-endif()
 
 # Version
 set(LIBGHTTP_VERSION_MAJOR 2)
