@@ -1,5 +1,5 @@
 if(USE_WOLFSSL)
-    set(link_external wolfssl)
+    set(link_external wolfssl m)
     include_directories(${WOLFSSL_INCLUDE_DIRS})
     link_directories(${WOLFSSL_LIBRARIES})
 elseif(USE_MBEDTLS)

@@ -29,10 +29,8 @@ if(USE_WOLFSSL)
             --prefix=${CMAKE_CURRENT_BINARY_DIR}/wolfssl
         BUILD_COMMAND make
         INSTALL_COMMAND make install
-        TEST_COMMAND "")
-
-    set(WOLFSSL_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/wolfssl/include PARENT_SCOPE)
-    set(WOLFSSL_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/wolfssl/lib PARENT_SCOPE)
+        TEST_COMMAND ""
+        )
 elseif(USE_MBEDTLS)
 
 elseif(USE_OPENSSL)
