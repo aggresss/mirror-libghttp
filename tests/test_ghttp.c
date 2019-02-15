@@ -13,7 +13,7 @@
 int test_http_get(void)
 
 {
-    char *uri = "http://kodo.router7.com/index.html";
+    char *uri = "https://cn.bing.com/favicon.ico";
     ghttp_request *request = NULL;
     ghttp_status status;
     int http_code;
