@@ -13,7 +13,7 @@
 int test_http_get(void)
 
 {
-    char *uri = "https://cn.bing.com/favicon.ico";
+    char *uri = "http://cn.bing.com/favicon.ico";
     ghttp_request *request = NULL;
     ghttp_status status;
     int http_code;
@@ -36,6 +36,7 @@ int test_http_get(void)
     }
     buf = ghttp_get_body(request);
     bytes_read = ghttp_get_body_len(request);
+    ghttp_request_destroy(request);
     return GHTTP_TEST_SUCCESS;
 }
 
