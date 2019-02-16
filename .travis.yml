@@ -7,7 +7,6 @@ compiler: gcc
 addons:
   apt:
     packages:
-    - cmake
     - valgrind
 
 before_script:
