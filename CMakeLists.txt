@@ -142,14 +142,5 @@ if(ENABLE_TESTING)
     enable_testing()
     include (CTest)
     add_subdirectory(tests)
-    # Valgrind memcheck option
-    set(MEMORYCHECK_COMMAND valgrind)
-    set(MEMORYCHECK_COMMAND_OPTIONS 
-        "--leak-check=yes \
-        --track-fds=yes \
-        --trace-children=yes \
-        --error-exitcode=1 "
-        )
-
 endif()
 

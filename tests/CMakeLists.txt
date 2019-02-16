@@ -23,6 +23,7 @@ set(src_test_ghttp
 
 add_executable(test_ghttp ${src_test_ghttp})
 add_dependencies(test_ghttp lib)
+target_compile_options(test_ghttp PRIVATE -std=c99)
 target_link_libraries(test_ghttp ghttp)
 if (WITH_TLS)
     target_link_libraries(test_ghttp ${link_external})
