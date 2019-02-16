@@ -17,4 +17,4 @@ script:
   - make
   - make test
   - ctest -T MemCheck
-  - coveralls --include src/CMakeFiles/ghttp_static.dir/  --gcov-options '\-lp'
+  - coveralls --include src/  --gcov-options '\-lp'
