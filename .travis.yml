@@ -13,7 +13,8 @@ before_script:
   - pip install --user cpp-coveralls
 
 script:
-  - cmake -D CMAKE_BUILD_TYPE:String="Debug" .
+  - cmake -D CMAKE_BUILD_TYPE:String="Coverage" .
   - make
   - make test
   - ctest -T MemCheck
+  - coveralls --include src/CMakeFiles/ghttp_static.dir/  --gcov-options '\-lp'
