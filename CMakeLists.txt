@@ -139,8 +139,8 @@ add_subdirectory(src)
 option(ENABLE_TESTING "Build libghttp tests." ON)
 
 if(ENABLE_TESTING)
-    include (CTest)
     enable_testing()
+    include (CTest)
     add_subdirectory(tests)
     # Valgrind memcheck option
     set(MEMORYCHECK_COMMAND valgrind)

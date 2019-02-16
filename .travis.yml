@@ -4,14 +4,17 @@ language: c
 
 compiler: gcc
 
-install:
-  cd test && ./configure && make
+addons:
+  apt:
+    packages:
+    - cmake
+    - valgrind
 
 before_script:
-  - cd -
   - pip install --user cpp-coveralls
 
 script:
-  - cd test
-  - ./test_all.out
-
+  - cmake -D CMAKE_BUILD_TYPE:String="Debug" .
+  - make
+  - make test
+  - ctest -T MemCheck
