@@ -75,7 +75,13 @@ set(LIBGHTTP_VERSION_MAJOR 2)
 set(LIBGHTTP_VERSION_MINOR 0)
 set(LIBGHTTP_VERSION_PATCH 0)
 set(LIBGHTTP_VERSION ${LIBGHTTP_VERSION_MAJOR}.${LIBGHTTP_VERSION_MINOR}.${LIBGHTTP_VERSION_PATCH})
-message(STATUS "Libghttp version: " ${LIBGHTTP_VERSION})
+message(STATUS "Libghttp official version: " ${LIBGHTTP_VERSION})
+
+get_commit_id(LIBGHTTP_VERSION_REPO)
+if(LIBGHTTP_VERSION_REPO)
+    message(STATUS "Libghttp repository version: " ${LIBGHTTP_VERSION_REPO})
+endif()
+
 
 # ------------------------------------------------------------------------------
 # target static and shared
@@ -140,6 +146,19 @@ option(ENABLE_TESTING "Build libghttp tests." ON)
 
 if(ENABLE_TESTING)
     enable_testing()
+    
+    find_program(VALGRIND valgrind)
+    if(VALGRIND)
+        # Ctest configuration variables must be set BEFORE include(Ctest)
+        set(MEMORYCHECK_COMMAND ${VALGRIND})
+        # Check process children and give detail for each leak
+        set(MEMORYCHECK_COMMAND_OPTIONS
+            "${MEMORYCHECK_COMMAND_OPTIONS} --trace-children=yes --leak-check=full --track-fds=yes")
+        # Set error code.
+        set(MEMORYCHECK_COMMAND_OPTIONS
+            "${MEMORYCHECK_COMMAND_OPTIONS} --error-exitcode=255")
+    endif()
+
     include (CTest)
     add_subdirectory(tests)
 endif()

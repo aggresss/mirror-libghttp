@@ -30,3 +30,14 @@ function(c_compiler_triplet output_triplet)
         )
     set(${output_triplet} ${compiler_triplet} PARENT_SCOPE)
 endfunction()
+
+# Get git commitid
+function(get_commit_id output_commit_id)
+    execute_process(COMMAND git describe --always --tags --long --dirty --abbrev=12
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        OUTPUT_VARIABLE local_commit_id
+        RESULT_VARIABLE locao_command_result
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET)
+    set(${output_commit_id} ${local_commit_id} PARENT_SCOPE)
+endfunction()
