@@ -144,6 +144,7 @@ if(ENABLE_TESTING)
             "${MEMORYCHECK_COMMAND_OPTIONS} --trace-children=yes --leak-check=yes --track-fds=yes")
         # Set error code.
         set(MEMORYCHECK_COMMAND_OPTIONS
+            "${MEMORYCHECK_COMMAND_OPTIONS} --error-exitcode=255")
         # Generate suppression hint.
         set(MEMORYCHECK_COMMAND_OPTIONS
             "${MEMORYCHECK_COMMAND_OPTIONS} --gen-suppressions=all)
