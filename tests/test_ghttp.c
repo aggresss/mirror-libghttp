@@ -13,6 +13,7 @@
 int test_http_get(void)
 
 {
+    int ret = GHTTP_TEST_FAIL;
     char *uri = "http://cn.bing.com/favicon.ico";
     ghttp_request *request = NULL;
     ghttp_status status;
@@ -22,22 +23,23 @@ int test_http_get(void)
 
     request = ghttp_request_new();
     if(ghttp_set_uri(request, uri) == -1)
-        exit(-1);
+        goto ec;
     if(ghttp_set_type(request, ghttp_type_get) == -1)
-        exit(-1);
+        goto ec;
     ghttp_prepare(request);
     status = ghttp_process(request);
     if(status == ghttp_error)
-        exit(-1);
+        goto ec;
     http_code = ghttp_status_code(request);
     LogDebug("http_code: %d", http_code);
     if (200 != http_code) {
-        return GHTTP_TEST_FAIL;
+        goto ec;
     }
     buf = ghttp_get_body(request);
     bytes_read = ghttp_get_body_len(request);
+ec:
     ghttp_request_destroy(request);
-    return GHTTP_TEST_SUCCESS;
+    return ret;
 }
 
 
