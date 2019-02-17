@@ -1,0 +1,9 @@
+{
+  "name": "log",
+  "version": "1.0.0",
+  "repo": "aggresss/playground-cpp/utils/log_normal",
+  "description": "log for C program",
+  "keywords": [ "log", "log" ],
+  "license": "MIT",
+  "src": [ "log.h", "log.c" ]
+}
