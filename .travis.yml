@@ -10,7 +10,7 @@ script:
   - cmake -D CMAKE_BUILD_TYPE:String="Coverage" .
   - make
   - make test
-  - ctest -T MemCheck
+  - ctest -T MemCheck -VV
   - cat Testing/Temporary/MemoryChecker.*.log || exit 0
   - coveralls --include src/  --exclude deps/ --gcov-options '\-lp' || exit 0
 

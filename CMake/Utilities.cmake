@@ -22,13 +22,13 @@ function(c_compiler_prefix output_prefix)
     set(${output_prefix} ${compiler_prefix} PARENT_SCOPE)
 endfunction()
 
-# Returns the ${CMAKE_C_COMPILER} triplet
-function(c_compiler_triplet output_triplet)
+# Returns the ${CMAKE_C_COMPILER} machine infomation
+function(c_compiler_machine output_machine)
     execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpmachine
-        OUTPUT_VARIABLE compiler_triplet
+        OUTPUT_VARIABLE compiler_machine
         OUTPUT_STRIP_TRAILING_WHITESPACE
         )
-    set(${output_triplet} ${compiler_triplet} PARENT_SCOPE)
+    set(${output_machine} ${compiler_machine} PARENT_SCOPE)
 endfunction()
 
 # Get git commitid
