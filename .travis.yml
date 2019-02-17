@@ -12,7 +12,7 @@ script:
   - make test
   - ctest -T MemCheck
   - cat Testing/Temporary/MemoryChecker.*.log || exit 0
-  - coveralls --include src/  --exclude deps/ --gcov-options '\-lp'
+  - coveralls --include src/  --exclude deps/ --gcov-options '\-lp' || exit 0
 
 addons:
   apt:
