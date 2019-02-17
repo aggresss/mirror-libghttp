@@ -18,7 +18,12 @@ message(STATUS "CMake system name: " ${CMAKE_SYSTEM_NAME})
 
 c_compiler_prefix(C_COMPILER_PREFIX)
 if(C_COMPILER_PREFIX)
-    message(STATUS "C_COMPILER_PREFIX: " ${C_COMPILER_PREFIX})
+    message(STATUS "C compiler prefix: " ${C_COMPILER_PREFIX})
+endif()
+
+c_compiler_machine(C_COMPILER_MACHINE)
+if(C_COMPILER_MACHINE)
+    message(STATUS "C compiler machine infomation: " ${C_COMPILER_MACHINE})
 endif()
 
 # ------------------------------------------------------------------------------
@@ -115,9 +120,12 @@ endif()
 # Document
 # ------------------------------------------------------------------------------
 
-add_custom_target(apidoc
-    COMMAND doxygen ghttp.doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc)
+find_program(DOXYGEN doxygen)
+if(DOXYGEN)
+    add_custom_target(apidoc
+        COMMAND doxygen ghttp.doxyfile
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc)
+endif()
 
 # ------------------------------------------------------------------------------
 # Subdirectory
@@ -133,15 +141,15 @@ add_subdirectory(src)
 option(ENABLE_TESTING "Build libghttp tests." ON)
 
 if(ENABLE_TESTING)
-    enable_testing()
-    
     find_program(VALGRIND valgrind)
     if(VALGRIND)
         # Ctest configuration variables must be set BEFORE include(Ctest)
         set(MEMORYCHECK_COMMAND ${VALGRIND})
         # Check process children and give detail for each leak
         set(MEMORYCHECK_COMMAND_OPTIONS
-            "${MEMORYCHECK_COMMAND_OPTIONS} --trace-children=yes --leak-check=yes --track-fds=yes")
+            "${MEMORYCHECK_COMMAND_OPTIONS} --leak-check=yes --show-reachable=yes")
+        set(MEMORYCHECK_COMMAND_OPTIONS
+            "${MEMORYCHECK_COMMAND_OPTIONS} --trace-children=yes  --track-fds=yes")
         # Set error code.
         set(MEMORYCHECK_COMMAND_OPTIONS
             "${MEMORYCHECK_COMMAND_OPTIONS} --error-exitcode=255")
@@ -152,8 +160,34 @@ if(ENABLE_TESTING)
         set(MEMORYCHECK_COMMAND_OPTIONS
             "${MEMORYCHECK_COMMAND_OPTIONS} --suppressions=${CMAKE_CURRENT_LIST_DIR}/valgrind.supp")
     endif()
-
     include (CTest)
+    
+    enable_testing()
     add_subdirectory(tests)
 endif()
+
+# ------------------------------------------------------------------------------
+# Pack
+# ------------------------------------------------------------------------------
+
+set(CPACK_PACKAGE_NAME "libghttp")
+set(CPACK_PACKAGE_VENDOR "aggresss")
+set(CPACK_PACKAGE_DESCRIPTION "Libghttp is a HTTP client library for GNOME 1.4")
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/aggresss/libghttp")
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
+set(CPACK_PACKAGE_FILE_README "${PROJECT_SOURCE_DIR}/README.md")
+
+set(CPACK_PACKAGE_VERSION_MAJOR "${LIBGHTTP_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${LIBGHTTP_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${LIBGHTTP_VERSION_PATCH}")
+set(CPACK_PACKAGE_VERSION_FULL "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+
+string(REGEX REPLACE
+    "([A-Za-z0-9_\\.]+)\\-([A-Za-z0-9_\\.]+)\\-([A-Za-z0-9_\\.]+)" "\\1-\\2"
+    C_COMPILE_ARCH_OS ${C_COMPILER_MACHINE})
+set(CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_FULL}-${C_COMPILE_ARCH_OS})
+
+set(CPACK_GENERATOR "TGZ")
+
+include (CPack)
 
