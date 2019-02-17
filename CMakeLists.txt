@@ -2,7 +2,7 @@
 # CMakeLists.txt for libghttp
 # ------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 2.8)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake;${CMAKE_MODULE_PATH}")
 include(Utilities)
 include(GNUInstallDirs)
@@ -36,36 +36,24 @@ endif()
 
 # Default C / CXX flags
 if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_C_FLAGS
-        " -Wall \
-            -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' \
-            -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' ")
-    set(CMAKE_CXX_FLAGS
-        " -Wall \
-            -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' \
-            -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' ")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall ")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"'")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'")
+    set(CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS})
 endif()
 
-set(CMAKE_C_FLAGS_DEBUG
-    " -g -ggdb -O0 -Wall \
-        -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' \
-        -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' ")
-set(CMAKE_CXX_FLAGS_DEBUG
-    " -g -ggdb -O0 -Wall \
-        -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"' \
-        -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' ")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -ggdb -O0 -Wall")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"'")
+set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
 
-set(CMAKE_C_FLAGS_RELEASE
-    " -O3 -Wall \
-        -DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO \
-        -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' ")
-set(CMAKE_CXX_FLAGS_RELEASE
-    " -O3 -Wall \
-        -DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO \
-        -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"' ")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"'")
+set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 
 set(CMAKE_C_FLAGS_COVERAGE " ${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
-set(CMAKE_CXX_FLAGS_COVERAGE " ${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS_COVERAGE ${CMAKE_C_FLAGS_COVERAGE})
 
 # ------------------------------------------------------------------------------
 # Version
@@ -74,12 +62,12 @@ set(CMAKE_CXX_FLAGS_COVERAGE " ${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-cove
 set(LIBGHTTP_VERSION_MAJOR 2)
 set(LIBGHTTP_VERSION_MINOR 0)
 set(LIBGHTTP_VERSION_PATCH 0)
-set(LIBGHTTP_VERSION_OFFICIAL ${LIBGHTTP_VERSION_MAJOR}.${LIBGHTTP_VERSION_MINOR}.${LIBGHTTP_VERSION_PATCH})
-message(STATUS "Libghttp official version: " ${LIBGHTTP_VERSION_OFFICIAL})
+set(LIBGHTTP_RELEASE_VERSION ${LIBGHTTP_VERSION_MAJOR}.${LIBGHTTP_VERSION_MINOR}.${LIBGHTTP_VERSION_PATCH})
+message(STATUS "Libghttp release version: " ${LIBGHTTP_RELEASE_VERSION})
 
-get_commit_id(LIBGHTTP_VERSION_REPO)
-if(LIBGHTTP_VERSION_REPO)
-    message(STATUS "Libghttp repository version: " ${LIBGHTTP_VERSION_REPO})
+get_commit_id(LIBGHTTP_BUILD_VERSION)
+if(LIBGHTTP_BUILD_VERSION)
+    message(STATUS "Libghttp build version: " ${LIBGHTTP_BUILD_VERSION})
 endif()
 
 
