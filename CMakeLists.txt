@@ -147,7 +147,7 @@ if(ENABLE_TESTING)
             "${MEMORYCHECK_COMMAND_OPTIONS} --error-exitcode=255")
         # Generate suppression hint.
         set(MEMORYCHECK_COMMAND_OPTIONS
-            "${MEMORYCHECK_COMMAND_OPTIONS} --gen-suppressions=all)
+            "${MEMORYCHECK_COMMAND_OPTIONS} --gen-suppressions=all")
         # Set suppression file
         set(MEMORYCHECK_COMMAND_OPTIONS
             "${MEMORYCHECK_COMMAND_OPTIONS} --suppressions=${CMAKE_CURRENT_LIST_DIR}/valgrind.supp")
