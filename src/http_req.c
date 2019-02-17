@@ -26,10 +26,10 @@
 #include "http_global.h"
 #include "http_config.h"
 
-#ifndef LIBGHTTP_VERSION
+#ifndef LIBGHTTP_VERSION_OFFICIAL
 const char *gVersionAgent = "version:nodefine";
 #else
-const char *gVersionAgent = "version:" LIBGHTTP_VERSION;
+const char *gVersionAgent = "version:" LIBGHTTP_VERSION_OFFICIAL;
 #endif
 
 const char *
