@@ -12,6 +12,7 @@ script:
 - make
 - make test
 - ctest -T MemCheck
+- cat Testing/Temporary/MemoryChecker.*.log || exit 0
 - coveralls --include src/  --exclude deps/ --gcov-options '\-lp'
 env:
   global:
