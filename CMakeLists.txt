@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 2.8)
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake;${CMAKE_MODULE_PATH}")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include(Utilities)
 include(GNUInstallDirs)
 
@@ -141,10 +141,13 @@ if(ENABLE_TESTING)
         set(MEMORYCHECK_COMMAND ${VALGRIND})
         # Check process children and give detail for each leak
         set(MEMORYCHECK_COMMAND_OPTIONS
-            "${MEMORYCHECK_COMMAND_OPTIONS} --trace-children=yes --leak-check=full --track-fds=yes")
+            "${MEMORYCHECK_COMMAND_OPTIONS} --trace-children=yes --leak-check=yes --track-fds=yes")
         # Set error code.
         set(MEMORYCHECK_COMMAND_OPTIONS
             "${MEMORYCHECK_COMMAND_OPTIONS} --error-exitcode=255")
+        # Set suppression file
+        set(MEMORYCHECK_COMMAND_OPTIONS
+            "${MEMORYCHECK_COMMAND_OPTIONS} --suppressions=${CMAKE_CURRENT_LIST_DIR}/valgrind.supp")
     endif()
 
     include (CTest)
