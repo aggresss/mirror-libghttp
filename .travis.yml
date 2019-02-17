@@ -2,20 +2,24 @@ os: linux
 dist: xenial
 language: c
 compiler: gcc
+
+before_script:
+  - pip install --user cpp-coveralls
+
+script:
+  - cmake -D CMAKE_BUILD_TYPE:String="Coverage" .
+  - make
+  - make test
+  - ctest -T MemCheck
+  - cat Testing/Temporary/MemoryChecker.*.log || exit 0
+  - coveralls --include src/  --exclude deps/ --gcov-options '\-lp'
+
 addons:
   apt:
     packages:
     - valgrind
-before_script:
-- pip install --user cpp-coveralls
-script:
-- cmake -D CMAKE_BUILD_TYPE:String="Coverage" .
-- make
-- make test
-- ctest -T MemCheck
-- cat Testing/Temporary/MemoryChecker.*.log || exit 0
-- coveralls --include src/  --exclude deps/ --gcov-options '\-lp'
+
 env:
   global:
     # COVERALLS_REPO_TOKEN
-    secure: GcNs8VRLNdHKNi4pIveUojzeS0F92iDBi3zcPcaB3vc37S6IFQ+QY0m1pBil+sqQrfjNE8Hzv2mhhRj9HRz79sOMObMmI+g/z4pIWQ61hPEZV9wbw/W9YtF5//jS8RUXro12YiSXb+uE0SgQz++ZZz2L00D/aZU6yH0FsphJQ8kGWMgbpIt5R4z9/uixl2I2YhuMpdKroRB0S7ALa61JFit+MilCKH0A1/QMeRvPFo8dUYe6NP385VgXv4y+p9x2CwnEJKMg9dTJ+XiiPrRp80bGDXP7LMdLTQevonVKn4k9JQzEaYgJ6cFofyola9M8bTHQOTswVSXqBMlSYik7RCojD1qYsG0PRXM6ph0MD3QzMS7ADnV5iLe1Elxm0cb5MPJ9CnsLTKqUvfVzmq4ZhIqctp7WtatolmMVrws1F84tzH9O7V/qE0u24SDqHJz90D1G9CyEd+XQF+8YOgS6gc3c7j7q12HdgLEASh1VIGIPFeafNYtDxDknXJP/qWSMC5Y+8lsmuHG5Z52S92TtydAmYHsYMhCJR6WUZKYeisL03dVrAlmJ1kO2jNNRKyt2nS3auNgPX8h9c0Vq8Amf38bZzOpo7/tQR0/u8fmMt3nwf9tED2X7oABT/BRZjwy+hRSZgsCzKkgvcVKjiQPKSBeRHHu7dmR86lRyzbWxJec=
+    - secure: GcNs8VRLNdHKNi4pIveUojzeS0F92iDBi3zcPcaB3vc37S6IFQ+QY0m1pBil+sqQrfjNE8Hzv2mhhRj9HRz79sOMObMmI+g/z4pIWQ61hPEZV9wbw/W9YtF5//jS8RUXro12YiSXb+uE0SgQz++ZZz2L00D/aZU6yH0FsphJQ8kGWMgbpIt5R4z9/uixl2I2YhuMpdKroRB0S7ALa61JFit+MilCKH0A1/QMeRvPFo8dUYe6NP385VgXv4y+p9x2CwnEJKMg9dTJ+XiiPrRp80bGDXP7LMdLTQevonVKn4k9JQzEaYgJ6cFofyola9M8bTHQOTswVSXqBMlSYik7RCojD1qYsG0PRXM6ph0MD3QzMS7ADnV5iLe1Elxm0cb5MPJ9CnsLTKqUvfVzmq4ZhIqctp7WtatolmMVrws1F84tzH9O7V/qE0u24SDqHJz90D1G9CyEd+XQF+8YOgS6gc3c7j7q12HdgLEASh1VIGIPFeafNYtDxDknXJP/qWSMC5Y+8lsmuHG5Z52S92TtydAmYHsYMhCJR6WUZKYeisL03dVrAlmJ1kO2jNNRKyt2nS3auNgPX8h9c0Vq8Amf38bZzOpo7/tQR0/u8fmMt3nwf9tED2X7oABT/BRZjwy+hRSZgsCzKkgvcVKjiQPKSBeRHHu7dmR86lRyzbWxJec=
