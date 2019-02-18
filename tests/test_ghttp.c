@@ -19,7 +19,7 @@ int test_http_get(void)
     ghttp_status status;
     int http_code;
     char *buf;
-    int bytes_read;
+    int nBodyLen;
 
     request = ghttp_request_new();
     if(ghttp_set_uri(request, uri) == -1)
@@ -31,27 +31,33 @@ int test_http_get(void)
     if(status == ghttp_error)
         goto ec;
     http_code = ghttp_status_code(request);
-    LogDebug("http_code: %d", http_code);
-    if (200 != http_code) {
+    LogDebug("http code: %d", http_code);
+    if (http_code <= 0) {
         goto ec;
     }
     buf = ghttp_get_body(request);
-    bytes_read = ghttp_get_body_len(request);
+    if (!buf) {
+        goto ec;
+    }
+    nBodyLen = ghttp_get_body_len(request);
+    LogDebug("http body length: %d", nBodyLen);
+    if (nBodyLen <= 0) {
+        goto ec;
+    }
+    ret = GHTTP_TEST_SUCCESS;
 ec:
     ghttp_request_destroy(request);
     return ret;
 }
 
 
-
 typedef struct _CmdArg {
         bool bTestHttpGet;
 }CmdArg;
 
-
 int main(int argc, const char * argv[])
 {
-    int ret;
+    int ret = GHTTP_TEST_FAIL;
     CmdArg cmdArg;
     memset(&cmdArg, 0, sizeof(cmdArg));
     cmdArg.bTestHttpGet = false;
@@ -62,8 +68,8 @@ int main(int argc, const char * argv[])
 
     flag_parse(argc, argv, "test libghttp");
     if (cmdArg.bTestHttpGet) {
-        test_http_get();
+        ret = test_http_get();
     }
-
-    return GHTTP_TEST_SUCCESS;
+ec:
+    return ret;
 }
