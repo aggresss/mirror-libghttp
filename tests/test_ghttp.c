@@ -32,18 +32,15 @@ int test_http_get(void)
         goto ec;
     http_code = ghttp_status_code(request);
     LogDebug("http code: %d", http_code);
-    if (http_code <= 0) {
+    if (http_code <= 0)
         goto ec;
-    }
     buf = ghttp_get_body(request);
-    if (!buf) {
+    if (!buf)
         goto ec;
-    }
     nBodyLen = ghttp_get_body_len(request);
     LogDebug("http body length: %d", nBodyLen);
-    if (nBodyLen <= 0) {
+    if (nBodyLen <= 0)
         goto ec;
-    }
     ret = GHTTP_TEST_SUCCESS;
 ec:
     ghttp_request_destroy(request);
