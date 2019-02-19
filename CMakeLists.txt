@@ -80,20 +80,20 @@ endif()
 # target static and shared
 # ------------------------------------------------------------------------------
 
-option(WITH_STATIC "Build libghttp static library." ON)
-option(WITH_SHARED "Build libghttp shared library." OFF)
+option(WITH_STATIC "Build static library." ON)
+option(WITH_SHARED "Build shared library." OFF)
 
 if (NOT WITH_STATIC AND NOT WITH_SHARED)
-    message(FATAL_ERROR "Need to choose static or shared libghttp build!")
+    message(FATAL_ERROR "Need to choose static or shared build!")
 endif()
 
 # ------------------------------------------------------------------------------
 # SSL/TLS feature
 # ------------------------------------------------------------------------------
 
-option(USE_WOLFSSL "Build libghttp WOLFSSL." OFF)
-option(USE_MBEDTLS "Build libghttp MBEDTLS." OFF)
-option(USE_OPENSSL "Build libghttp OPENSSL." OFF)
+option(USE_WOLFSSL "Build with WOLFSSL." OFF)
+option(USE_MBEDTLS "Build with MBEDTLS." OFF)
+option(USE_OPENSSL "Build with OPENSSL." OFF)
 
 count_true(ssl_options_count
     USE_WOLFSSL
@@ -113,7 +113,7 @@ if(ssl_options_count EQUAL "1")
         set(OPENSSL_LIBRARIES ${PROJECT_BINARY_DIR}/third_party/openssl/lib)
     endif()
 elseif(ssl_options_count GREATER "1")
-    message(FATAL_ERROR "Only one ssl library can be selected when libghttp build!")
+    message(FATAL_ERROR "Only one ssl library can be selected when build!")
 endif()
 
 # ------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ add_subdirectory(src)
 # Test 
 # ------------------------------------------------------------------------------
 
-option(ENABLE_TESTING "Build libghttp tests." ON)
+option(ENABLE_TESTING "Build tests." ON)
 
 if(ENABLE_TESTING)
     find_program(VALGRIND valgrind)
