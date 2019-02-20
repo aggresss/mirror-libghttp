@@ -122,8 +122,8 @@ endif()
 
 find_program(DOXYGEN doxygen)
 if(DOXYGEN)
-    add_custom_target(apidoc
-        COMMAND doxygen ghttp.doxyfile
+    add_custom_target(doc
+        COMMAND doxygen ghttp.Doxyfile
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc)
 endif()
 
@@ -135,7 +135,7 @@ add_subdirectory(include)
 add_subdirectory(src)
 
 # ------------------------------------------------------------------------------
-# Test 
+# Test
 # ------------------------------------------------------------------------------
 
 option(ENABLE_TESTING "Build tests." ON)
