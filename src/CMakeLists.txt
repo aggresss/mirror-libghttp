@@ -9,7 +9,7 @@ endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-set(src_libghttp
+set(SRCS_1
     ghttp.c
     http_base64.c
     http_date.c
@@ -19,6 +19,12 @@ set(src_libghttp
     http_trans.c
     http_uri.c
     )
+
+foreach(f IN LISTS SRCS_1)
+  get_filename_component(b ${f} NAME)
+  set_source_files_properties(${f} PROPERTIES
+    COMPILE_DEFINITIONS "__FILE_NAME__=\"${b}\"")
+endforeach()
 
 if(USE_WOLFSSL)
     set(depends_external external-wolfssl)
@@ -36,8 +42,9 @@ endif()
 
 # build static target
 if(WITH_STATIC)
-    add_library(ghttp_static STATIC ${src_libghttp})
+    add_library(ghttp_static STATIC ${SRCS_1})
     set_target_properties(ghttp_static PROPERTIES OUTPUT_NAME ghttp)
+    target_compile_definitions(ghttp_static PRIVATE "-D__PROJECT__=\"[libghttp]\"")
     if (USE_WOLFSSL OR USE_MBEDTLS OR USE_OPENSSL)
         add_dependencies(ghttp_static ${depends_external})
     endif()
@@ -49,9 +56,10 @@ endif(WITH_STATIC)
 
 # build shared target
 if(WITH_SHARED)
-    add_library(ghttp_shared SHARED ${src_libghttp})
+    add_library(ghttp_shared SHARED ${SRCS_1})
     set_target_properties(ghttp_shared PROPERTIES OUTPUT_NAME ghttp)
     set_target_properties(ghttp_shared PROPERTIES VERSION ${LIBGHTTP_VERSION} SOVERSION ${LIBGHTTP_VERSION_MAJOR})
+    target_compile_definitions(ghttp_shared PRIVATE "-D__PROJECT__=\"[libghttp]\"")
     if(WITH_TLS)
         add_dependencies(ghttp_shared ${depends_external})
     endif()

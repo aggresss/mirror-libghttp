@@ -1,32 +1,39 @@
 if(USE_WOLFSSL)
-    set(link_external wolfssl m)
-    include_directories(${WOLFSSL_INCLUDE_DIRS})
-    link_directories(${WOLFSSL_LIBRARIES})
+  set(link_external wolfssl m)
+  include_directories(${WOLFSSL_INCLUDE_DIRS})
+  link_directories(${WOLFSSL_LIBRARIES})
 elseif(USE_MBEDTLS)
-    set(link_external mbedtls)
-    include_directories(${MBEDTLS_INCLUDE_DIRS})
-    link_directories(${MBEDTLS_LIBRARIES})
+  set(link_external mbedtls)
+  include_directories(${MBEDTLS_INCLUDE_DIRS})
+  link_directories(${MBEDTLS_LIBRARIES})
 elseif(USE_OPENSSL)
-    set(link_external openssl)
-    include_directories(${OPENSSL_INCLUDE_DIRS})
-    link_directories(${OPENSSL_LIBRARIES})
+  set(link_external openssl)
+  include_directories(${OPENSSL_INCLUDE_DIRS})
+  link_directories(${OPENSSL_LIBRARIES})
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps)
 link_directories(${PROJECT_BINARY_DIR}/src)
-set(src_test_ghttp
-    ${PROJECT_SOURCE_DIR}/deps/log/log.c
-    ${PROJECT_SOURCE_DIR}/deps/flag/flag.c
-    test_ghttp.c
-    )
+set(SRCS_1
+  ${PROJECT_SOURCE_DIR}/deps/log/log.c
+  ${PROJECT_SOURCE_DIR}/deps/flag/flag.c
+  test_ghttp.c
+  )
+foreach(f IN LISTS SRCS_1)
+  get_filename_component(b ${f} NAME)
+  set_source_files_properties(${f} PROPERTIES
+    COMPILE_DEFINITIONS "__FILE_NAME__=\"${b}\"")
+endforeach()
 
-add_executable(test_ghttp ${src_test_ghttp})
-add_dependencies(test_ghttp lib)
-target_compile_options(test_ghttp PRIVATE -std=c99)
-target_link_libraries(test_ghttp ghttp)
+set(TARGET_1 "test_ghttp")
+add_executable(${TARGET_1} ${SRCS_1})
+add_dependencies(${TARGET_1} lib)
+target_compile_options(${TARGET_1} PRIVATE -std=c99)
+target_compile_definitions(${TARGET_1} PRIVATE "-D__PROJECT__=\"[${TARGET_1}]\"")
+target_link_libraries(${TARGET_1} ghttp)
 if (WITH_TLS)
-    target_link_libraries(test_ghttp ${link_external})
+  target_link_libraries(${TARGET_1} ${link_external})
 endif()
 
 add_test(NAME test_http_get COMMAND test_ghttp --http_get)

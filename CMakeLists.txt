@@ -18,12 +18,12 @@ message(STATUS "CMake system name: " ${CMAKE_SYSTEM_NAME})
 
 c_compiler_prefix(C_COMPILER_PREFIX)
 if(C_COMPILER_PREFIX)
-    message(STATUS "C compiler prefix: " ${C_COMPILER_PREFIX})
+  message(STATUS "C compiler prefix: " ${C_COMPILER_PREFIX})
 endif()
 
 c_compiler_machine(C_COMPILER_MACHINE)
 if(C_COMPILER_MACHINE)
-    message(STATUS "C compiler machine infomation: " ${C_COMPILER_MACHINE})
+  message(STATUS "C compiler machine infomation: " ${C_COMPILER_MACHINE})
 endif()
 
 # ------------------------------------------------------------------------------
@@ -31,30 +31,23 @@ endif()
 # ------------------------------------------------------------------------------
 
 set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE}
-    CACHE STRING "Choose the type of build: None Debug Release Coverage"
-    FORCE
-    )
+  CACHE STRING "Choose the type of build: None Debug Release Coverage" FORCE)
 
 if(CMAKE_BUILD_TYPE)
-    message(STATUS "CMake build type: " ${CMAKE_BUILD_TYPE})
+  message(STATUS "CMake build type: " ${CMAKE_BUILD_TYPE})
 endif()
 
 # Default C / CXX flags
 if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall ")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"'")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'")
-    set(CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS})
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall ")
+  set(CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS})
 endif()
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -ggdb -O0 -Wall")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D__FILE_NAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"'")
 set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
 
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall -DNDEBUG")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -D__PROJECT__='\"[${CMAKE_PROJECT_NAME}]\"'")
 set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 
 set(CMAKE_C_FLAGS_COVERAGE "${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
@@ -72,9 +65,8 @@ message(STATUS "Libghttp release version: " ${LIBGHTTP_RELEASE_VERSION})
 
 get_commit_id(LIBGHTTP_BUILD_VERSION)
 if(LIBGHTTP_BUILD_VERSION)
-    message(STATUS "Libghttp build version: " ${LIBGHTTP_BUILD_VERSION})
+  message(STATUS "Libghttp build version: " ${LIBGHTTP_BUILD_VERSION})
 endif()
-
 
 # ------------------------------------------------------------------------------
 # target static and shared
@@ -84,7 +76,7 @@ option(WITH_STATIC "Build static library." ON)
 option(WITH_SHARED "Build shared library." OFF)
 
 if (NOT WITH_STATIC AND NOT WITH_SHARED)
-    message(FATAL_ERROR "Need to choose static or shared build!")
+  message(FATAL_ERROR "Need to choose static or shared build!")
 endif()
 
 # ------------------------------------------------------------------------------
@@ -96,24 +88,24 @@ option(USE_MBEDTLS "Build with MBEDTLS." OFF)
 option(USE_OPENSSL "Build with OPENSSL." OFF)
 
 count_true(ssl_options_count
-    USE_WOLFSSL
-    USE_MBEDTLS
-    USE_OPENSSL
-    )
+  USE_WOLFSSL
+  USE_MBEDTLS
+  USE_OPENSSL
+  )
 if(ssl_options_count EQUAL "1")
-    set(WITH_TLS ON)
-    if(USE_WOLFSSL)
-        set(WOLFSSL_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/third_party/wolfssl/include)
-        set(WOLFSSL_LIBRARIES ${PROJECT_BINARY_DIR}/third_party/wolfssl/lib)
-    elseif(USE_MBEDTLS)
-        set(MBEDTLS_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/third_party/mbedtls/include)
-        set(MBEDTLS_LIBRARIES ${PROJECT_BINARY_DIR}/third_party/mbedtls/lib)
-    elseif(USE_OPENSSL)
-        set(OPENSSL_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/third_party/openssl/include)
-        set(OPENSSL_LIBRARIES ${PROJECT_BINARY_DIR}/third_party/openssl/lib)
-    endif()
+  set(WITH_TLS ON)
+  if(USE_WOLFSSL)
+    set(WOLFSSL_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/third_party/wolfssl/include)
+    set(WOLFSSL_LIBRARIES ${PROJECT_BINARY_DIR}/third_party/wolfssl/lib)
+  elseif(USE_MBEDTLS)
+    set(MBEDTLS_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/third_party/mbedtls/include)
+    set(MBEDTLS_LIBRARIES ${PROJECT_BINARY_DIR}/third_party/mbedtls/lib)
+  elseif(USE_OPENSSL)
+    set(OPENSSL_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/third_party/openssl/include)
+    set(OPENSSL_LIBRARIES ${PROJECT_BINARY_DIR}/third_party/openssl/lib)
+  endif()
 elseif(ssl_options_count GREATER "1")
-    message(FATAL_ERROR "Only one ssl library can be selected when build!")
+  message(FATAL_ERROR "Only one ssl library can be selected when build!")
 endif()
 
 # ------------------------------------------------------------------------------
@@ -122,9 +114,9 @@ endif()
 
 find_program(DOXYGEN doxygen)
 if(DOXYGEN)
-    add_custom_target(doc
-        COMMAND doxygen ghttp.Doxyfile
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc)
+  add_custom_target(doc
+    COMMAND doxygen ghttp.Doxyfile
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc)
 endif()
 
 # ------------------------------------------------------------------------------
@@ -141,29 +133,28 @@ add_subdirectory(src)
 option(ENABLE_TESTING "Build tests." ON)
 
 if(ENABLE_TESTING)
-    find_program(VALGRIND valgrind)
-    if(VALGRIND)
-        # Ctest configuration variables must be set BEFORE include(Ctest)
-        set(MEMORYCHECK_COMMAND ${VALGRIND})
-        # Check process children and give detail for each leak
-        set(MEMORYCHECK_COMMAND_OPTIONS
-            "${MEMORYCHECK_COMMAND_OPTIONS} --leak-check=yes --show-reachable=yes")
-        set(MEMORYCHECK_COMMAND_OPTIONS
-            "${MEMORYCHECK_COMMAND_OPTIONS} --trace-children=yes --track-fds=yes")
-        # Set error code.
-        set(MEMORYCHECK_COMMAND_OPTIONS
-            "${MEMORYCHECK_COMMAND_OPTIONS} --error-exitcode=255")
-        # Generate suppression hint.
-        set(MEMORYCHECK_COMMAND_OPTIONS
-            "${MEMORYCHECK_COMMAND_OPTIONS} --gen-suppressions=all")
-        # Set suppression file
-        set(MEMORYCHECK_COMMAND_OPTIONS
-            "${MEMORYCHECK_COMMAND_OPTIONS} --suppressions=${CMAKE_CURRENT_LIST_DIR}/valgrind.supp")
-    endif()
-    include (CTest)
-    
-    enable_testing()
-    add_subdirectory(tests)
+  find_program(VALGRIND valgrind)
+  if(VALGRIND)
+    # Ctest configuration variables must be set BEFORE include(Ctest)
+    set(MEMORYCHECK_COMMAND ${VALGRIND})
+    # Check process children and give detail for each leak
+    set(MEMORYCHECK_COMMAND_OPTIONS
+      "${MEMORYCHECK_COMMAND_OPTIONS} --leak-check=yes --show-reachable=yes")
+    set(MEMORYCHECK_COMMAND_OPTIONS
+      "${MEMORYCHECK_COMMAND_OPTIONS} --trace-children=yes --track-fds=yes")
+    # Set error code.
+    set(MEMORYCHECK_COMMAND_OPTIONS
+      "${MEMORYCHECK_COMMAND_OPTIONS} --error-exitcode=255")
+    # Generate suppression hint.
+    set(MEMORYCHECK_COMMAND_OPTIONS
+      "${MEMORYCHECK_COMMAND_OPTIONS} --gen-suppressions=all")
+    # Set suppression file
+    set(MEMORYCHECK_COMMAND_OPTIONS
+      "${MEMORYCHECK_COMMAND_OPTIONS} --suppressions=${CMAKE_CURRENT_LIST_DIR}/valgrind.supp")
+  endif()
+  include (CTest)
+  enable_testing()
+  add_subdirectory(tests)
 endif()
 
 # ------------------------------------------------------------------------------
@@ -183,11 +174,9 @@ set(CPACK_PACKAGE_VERSION_PATCH "${LIBGHTTP_VERSION_PATCH}")
 set(CPACK_PACKAGE_VERSION_FULL "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 
 string(REGEX REPLACE
-    "([A-Za-z0-9_\\.]+)\\-([A-Za-z0-9_\\.]+)\\-([A-Za-z0-9_\\.]+)" "\\1-\\2"
-    C_COMPILE_ARCH_OS ${C_COMPILER_MACHINE})
-set(CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_FULL}-${C_COMPILE_ARCH_OS})
-
+  "([A-Za-z0-9_\\.]+)\\-([A-Za-z0-9_\\.]+)\\-([A-Za-z0-9_\\.]+)" "\\1-\\2"
+  C_COMPILE_ARCH_OS ${C_COMPILER_MACHINE})
+set(CPACK_PACKAGE_FILE_NAME
+  ${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_FULL}-${C_COMPILE_ARCH_OS})
 set(CPACK_GENERATOR "TGZ")
-
 include (CPack)
-

@@ -7,7 +7,7 @@ before_script:
   - pip install --user cpp-coveralls
 
 script:
-  - cmake -D CMAKE_BUILD_TYPE:String="Coverage" .
+  - cmake -DCMAKE_BUILD_TYPE:String="Coverage" .
   - make
   - ctest -T Test -VV
   - ctest -T MemCheck -VV
