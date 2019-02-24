@@ -26,7 +26,7 @@ if(USE_WOLFSSL)
         --enable-shared=${THIRDPARTY_WITH_SHARED}
         --disable-debug
         --host=${C_COMPILER_PREFIX}
-        --prefix=${PROJECT_BINARY_DIR}/third_party/wolfssl
+        --prefix=${WOLFSSL_PREFIX}
     BUILD_COMMAND make
     INSTALL_COMMAND make install
     TEST_COMMAND ""
