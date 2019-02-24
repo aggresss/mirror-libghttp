@@ -83,18 +83,18 @@ endif()
 # SSL/TLS feature
 # ------------------------------------------------------------------------------
 
-option(USE_WOLFSSL "Build with WOLFSSL." OFF)
+option(WITH_WOLFSSL "Build with WOLFSSL." OFF)
 option(USE_MBEDTLS "Build with MBEDTLS." OFF)
 option(USE_OPENSSL "Build with OPENSSL." OFF)
 
 count_true(ssl_options_count
-  USE_WOLFSSL
+  WITH_WOLFSSL
   USE_MBEDTLS
   USE_OPENSSL
   )
 if(ssl_options_count EQUAL "1")
   set(WITH_TLS ON)
-  if(USE_WOLFSSL)
+  if(WITH_WOLFSSL)
     set(WOLFSSL_PREFIX ${PROJECT_BINARY_DIR}/third_party/wolfssl)
     set(WOLFSSL_INCLUDE_DIRS ${WOLFSSL_PREFIX}/include)
     set(WOLFSSL_LIBRARIES ${WOLFSSL_PREFIX}/lib)

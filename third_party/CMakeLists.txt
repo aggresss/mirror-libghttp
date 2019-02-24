@@ -16,7 +16,7 @@ else()
   set(THIRDPARTY_WITH_SHARED, "no")
 endif()
 
-if(USE_WOLFSSL)
+if(WITH_WOLFSSL)
   ExternalProject_Add(external-wolfssl
     EXCLUDE_FROM_ALL TRUE
     BUILD_IN_SOURCE TRUE

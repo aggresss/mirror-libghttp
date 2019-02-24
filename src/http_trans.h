@@ -35,7 +35,7 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
-#elif defined (USE_WOLFSSL)
+#elif defined (WITH_WOLFSSL)
 #include <wolfssl/options.h>
 #include <wolfssl/ssl.h>
 #endif
@@ -75,7 +75,7 @@ typedef struct http_trans_conn_tag {
 #ifdef USE_OPENSSL
   SSL                 *ssl_conn;
   X509                *ssl_cert;
-#elif defined (USE_WOLFSSL)
+#elif defined (WITH_WOLFSSL)
   WOLFSSL             *ssl_conn;
 #endif
 } http_trans_conn;

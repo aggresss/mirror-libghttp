@@ -2,7 +2,7 @@
 # libghttp/tests CMakeLists.txt
 # ------------------------------------------------------------------------------
 
-if(USE_WOLFSSL)
+if(WITH_WOLFSSL)
   set(link_external wolfssl m)
   include_directories(${WOLFSSL_INCLUDE_DIRS})
   link_directories(${WOLFSSL_LIBRARIES})

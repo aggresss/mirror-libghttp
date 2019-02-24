@@ -4,7 +4,7 @@
 #cmakedefine LIBGHTTP_RELEASE_VERSION "@LIBGHTTP_RELEASE_VERSION@"
 #cmakedefine LIBGHTTP_BUILD_VERSION   "@LIBGHTTP_BUILD_VERSION@"
 
-#cmakedefine USE_WOLFSSL
+#cmakedefine WITH_WOLFSSL
 #cmakedefine USE_MBEDTLS
 #cmakedefine USE_OPENSSL
 

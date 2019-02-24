@@ -43,7 +43,7 @@ static int          ssl_initialized = 0;
 static SSL_METHOD * ssl_method = NULL;
 static SSL_CTX    * ssl_context = NULL;
 
-#elif defined (USE_WOLFSSL)
+#elif defined (WITH_WOLFSSL)
 #include <wolfssl/options.h>
 #include <wolfssl/ssl.h>
 
@@ -208,7 +208,7 @@ http_trans_connect(http_trans_conn *a_conn)
       }
   }
 
-#elif defined (USE_WOLFSSL)
+#elif defined (WITH_WOLFSSL)
   /* initialize the SSL data structures */
   if (a_conn->USE_SSL)
     {
@@ -265,7 +265,7 @@ http_trans_conn_new(int nTimeoutInSecond)
 #ifdef USE_OPENSSL
   l_return->ssl_conn = NULL;
   l_return->ssl_cert = NULL;
-#elif defined (USE_WOLFSSL)
+#elif defined (WITH_WOLFSSL)
   l_return->ssl_conn = NULL;
 #endif  
   return l_return;
@@ -315,7 +315,7 @@ http_trans_conn_close(http_trans_conn * a_conn)
         }
       a_conn->USE_SSL = 0;
     }
-#elif defined (USE_WOLFSSL)
+#elif defined (WITH_WOLFSSL)
   if(a_conn->USE_SSL)
     {
       if(a_conn->ssl_conn)
@@ -381,7 +381,7 @@ http_trans_conn_set_ssl(http_trans_conn * a_conn, int USE_SSL)
       }    
   }
 
-#elif defined (USE_WOLFSSL)
+#elif defined (WITH_WOLFSSL)
   if(USE_SSL) {
     a_conn->USE_SSL = 1;
 
@@ -497,7 +497,7 @@ http_trans_read_into_buf(http_trans_conn *a_conn)
         return HTTP_TRANS_DONE;
       }
 
-#elif defined (USE_WOLFSSL)
+#elif defined (WITH_WOLFSSL)
       if ((a_conn->last_read = l_read =
            wolfSSL_read(a_conn->ssl_conn,
                     &a_conn->io_buf[a_conn->io_buf_alloc],
@@ -576,7 +576,7 @@ http_trans_write_buf(http_trans_conn *a_conn)
             return HTTP_TRANS_ERR;
         }
 
-#elif defined (USE_WOLFSSL)
+#elif defined (WITH_WOLFSSL)
       if ((a_conn->last_read = l_written =
            wolfSSL_write(a_conn->ssl_conn,
                      &a_conn->io_buf[a_conn->io_buf_io_done],
