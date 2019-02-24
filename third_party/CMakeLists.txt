@@ -35,7 +35,7 @@ if(WITH_WOLFSSL)
     INSTALL_COMMAND make install
     TEST_COMMAND ""
     )
-elseif(USE_MBEDTLS)
+elseif(WITH_MBEDTLS)
 
 elseif(WITH_OPENSSL)
 

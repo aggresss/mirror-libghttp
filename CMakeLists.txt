@@ -84,12 +84,12 @@ endif()
 # ------------------------------------------------------------------------------
 
 option(WITH_WOLFSSL "Build with WOLFSSL." OFF)
-option(USE_MBEDTLS "Build with MBEDTLS." OFF)
+option(WITH_MBEDTLS "Build with MBEDTLS." OFF)
 option(WITH_OPENSSL "Build with OPENSSL." OFF)
 
 count_true(ssl_options_count
   WITH_WOLFSSL
-  USE_MBEDTLS
+  WITH_MBEDTLS
   WITH_OPENSSL
   )
 if(ssl_options_count EQUAL "1")
@@ -98,7 +98,7 @@ if(ssl_options_count EQUAL "1")
     set(WOLFSSL_PREFIX ${PROJECT_BINARY_DIR}/third_party/wolfssl)
     set(WOLFSSL_INCLUDE_DIRS ${WOLFSSL_PREFIX}/include)
     set(WOLFSSL_LIBRARIES ${WOLFSSL_PREFIX}/lib)
-  elseif(USE_MBEDTLS)
+  elseif(WITH_MBEDTLS)
     set(MBEDTLS_PREFIX ${PROJECT_BINARY_DIR}/third_party/mbedtls)
     set(MBEDTLS_INCLUDE_DIRS ${MBEDTLS_PREFIX}/include)
     set(MBEDTLS_LIBRARIES ${MBEDTLS_PREFIX}/lib)
