@@ -13,13 +13,15 @@ elseif(USE_OPENSSL)
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps)
+include_directories(${DEPENDS_DIRS})
+
 link_directories(${PROJECT_BINARY_DIR}/src)
 set(SRCS_1
-  ${PROJECT_SOURCE_DIR}/deps/log/log.c
-  ${PROJECT_SOURCE_DIR}/deps/flag/flag.c
   test_ghttp.c
   )
+aux_source_directory(${DEPENDS_DIRS}/log SRCS_1)
+aux_source_directory(${DEPENDS_DIRS}/flag SRCS_1)
+
 foreach(f IN LISTS SRCS_1)
   get_filename_component(b ${f} NAME)
   set_source_files_properties(${f} PROPERTIES

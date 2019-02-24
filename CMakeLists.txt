@@ -125,6 +125,9 @@ endif()
 # ------------------------------------------------------------------------------
 # Subdirectory
 # ------------------------------------------------------------------------------
+
+set(DEPENDS_DIRS ${PROJECT_SOURCE_DIR}/deps)
+
 add_subdirectory(third_party)
 add_subdirectory(include)
 add_subdirectory(src)
