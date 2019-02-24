@@ -37,6 +37,6 @@ if(WITH_WOLFSSL)
     )
 elseif(USE_MBEDTLS)
 
-elseif(USE_OPENSSL)
+elseif(WITH_OPENSSL)
 
 endif()

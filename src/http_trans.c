@@ -32,7 +32,7 @@
 #include "http_global.h"
 #include "http_config.h"
 
-#ifdef USE_OPENSSL
+#ifdef WITH_OPENSSL
 #include <openssl/crypto.h>
 #include <openssl/x509.h>
 #include <openssl/pem.h>
@@ -168,7 +168,7 @@ http_trans_connect(http_trans_conn *a_conn)
       a_conn->error = errno;
       goto ec;
     }
-#ifdef USE_OPENSSL
+#ifdef WITH_OPENSSL
   /* initialize the SSL data structures */
   if (a_conn->USE_SSL)
     {
@@ -262,7 +262,7 @@ http_trans_conn_new(int nTimeoutInSecond)
   /* don't use SSL until told to */
   l_return->USE_SSL = 0;
   l_return->nTimeoutInSecond = nTimeoutInSecond;
-#ifdef USE_OPENSSL
+#ifdef WITH_OPENSSL
   l_return->ssl_conn = NULL;
   l_return->ssl_cert = NULL;
 #elif defined (WITH_WOLFSSL)
@@ -294,7 +294,7 @@ http_trans_conn_close(http_trans_conn * a_conn)
   if(a_conn == NULL) 
     return;
   
-#ifdef USE_OPENSSL
+#ifdef WITH_OPENSSL
   if(a_conn->USE_SSL)
     {
       if(a_conn->ssl_conn) 
@@ -349,7 +349,7 @@ http_trans_conn_set_ssl(http_trans_conn * a_conn, int USE_SSL)
   if(USE_SSL == a_conn->USE_SSL)
     return -2;
 
-#ifdef USE_OPENSSL
+#ifdef WITH_OPENSSL
   if(USE_SSL) {
     a_conn->USE_SSL = 1;
 
@@ -478,7 +478,7 @@ http_trans_read_into_buf(http_trans_conn *a_conn)
   /* read in some data */
   if(a_conn->USE_SSL)
     {
-#ifdef USE_OPENSSL
+#ifdef WITH_OPENSSL
       if ((a_conn->last_read = l_read = 
            SSL_read(a_conn->ssl_conn,
                     &a_conn->io_buf[a_conn->io_buf_alloc],
@@ -560,7 +560,7 @@ http_trans_write_buf(http_trans_conn *a_conn)
   /* write out some data */
   if(a_conn->USE_SSL)
     {
-#ifdef USE_OPENSSL
+#ifdef WITH_OPENSSL
       if ((a_conn->last_read = l_written = 
            SSL_write(a_conn->ssl_conn, 
                      &a_conn->io_buf[a_conn->io_buf_io_done],

@@ -28,7 +28,7 @@
 #include <netdb.h>
 #include "http_config.h"
 
-#ifdef USE_OPENSSL
+#ifdef WITH_OPENSSL
 #include <openssl/crypto.h>
 #include <openssl/x509.h>
 #include <openssl/pem.h>
@@ -72,7 +72,7 @@ typedef struct http_trans_conn_tag {
   /* SSL support. we always have a USE_SSL var, even if compiled
    * without SSL; it's just always FALSE unless SSL is compiled in. */
   int                  USE_SSL;
-#ifdef USE_OPENSSL
+#ifdef WITH_OPENSSL
   SSL                 *ssl_conn;
   X509                *ssl_cert;
 #elif defined (WITH_WOLFSSL)
