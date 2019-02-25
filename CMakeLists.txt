@@ -29,6 +29,8 @@ endif()
 
 message(STATUS "CMake version: " ${CMAKE_VERSION})
 message(STATUS "CMake system name: " ${CMAKE_SYSTEM_NAME})
+message(STATUS "C compiler: " ${CMAKE_C_COMPILER})
+message(STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})
 
 c_compiler_prefix(C_COMPILER_PREFIX)
 if(C_COMPILER_PREFIX)
