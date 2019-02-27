@@ -5,15 +5,15 @@
 include(ExternalProject)
 
 if(WITH_STATIC)
-  set(THIRDPARTY_WITH_STATIC, "yes")
+  set(THIRDPARTY_WITH_STATIC "yes")
 else()
-  set(THIRDPARTY_WITH_STATIC, "no")
+  set(THIRDPARTY_WITH_STATIC "no")
 endif()
 
 if(WITH_SHARED)
-  set(THIRDPARTY_WITH_SHARED, "yes")
+  set(THIRDPARTY_WITH_SHARED "yes")
 else()
-  set(THIRDPARTY_WITH_SHARED, "no")
+  set(THIRDPARTY_WITH_SHARED "no")
 endif()
 
 if(WITH_WOLFSSL)
@@ -34,6 +34,12 @@ if(WITH_WOLFSSL)
     BUILD_COMMAND make
     INSTALL_COMMAND make install
     TEST_COMMAND ""
+    )
+  install(DIRECTORY ${WOLFSSL_PREFIX}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+  install(DIRECTORY ${WOLFSSL_PREFIX}/lib/
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
     )
 elseif(WITH_MBEDTLS)
 
