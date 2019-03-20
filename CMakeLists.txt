@@ -7,6 +7,10 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include(Utilities)
 include(GNUInstallDirs)
 
+# ------------------------------------------------------------------------------
+# Cross compile
+# ------------------------------------------------------------------------------
+
 # MUST before project()
 if(CROSS_COMPILE)
   set(CMAKE_C_COMPILER ${CROSS_COMPILE}-gcc)
@@ -16,6 +20,10 @@ if(CROSS_COMPILE)
   set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
   set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 endif()
+
+# ------------------------------------------------------------------------------
+# Project
+# ------------------------------------------------------------------------------
 
 project("libghttp" C)
 
