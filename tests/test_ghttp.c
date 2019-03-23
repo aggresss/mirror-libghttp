@@ -85,6 +85,9 @@ int test_http_download()
     /* receive */
     do {
         status = ghttp_process(request);
+        if (status == ghttp_error) {
+            goto ec;
+        }
         current_status = ghttp_get_status(request);
         LogDebug("ghttp current status: %d, read: %d, total:%d",
                 current_status.proc, current_status.bytes_read, current_status.bytes_total);
