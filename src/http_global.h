@@ -30,4 +30,18 @@
 #define HTTP_TRANS_SYNC           0
 #define HTTP_TRANS_ASYNC          1
 
+#if 1
+#include <unistd.h>
+#include <stdio.h>
+
+#define malloc(x) malloc(x);\
+        fprintf(stderr, "%s malloc:%zu\n", __FUNCTION__, x);\
+        fflush(stderr)
+
+#define realloc(x,y) realloc((x),(y));\
+        fprintf(stderr, "%s realloc:%zu\n", __FUNCTION__, y);\
+        fflush(stderr)
+
+#endif
+
 #endif /* GHTTP_GLOBAL_H */
