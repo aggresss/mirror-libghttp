@@ -47,4 +47,4 @@ if (WITH_TLS)
 endif()
 
 add_test(NAME test_http_get COMMAND test_ghttp --http_get)
-
+add_test(NAME test_http_download COMMAND test_ghttp --http_download)
