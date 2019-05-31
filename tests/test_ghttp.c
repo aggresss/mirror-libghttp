@@ -48,40 +48,42 @@ ec:
 }
 
 
-int test_http_download()
+static int test_http_download(char *_pPath, char *_pUrl)
 {
-    int ret = GHTTP_TEST_FAIL;
-    char *uri = "http://link.router7.com:8091/Cp8ugVw-i8WAJU9EAEnLHjlJfMc620.zip";
+    const int l_chunk_size = 128 * 1024;
+    int n = 0;
+    int ret = -1;
     ghttp_request *request = NULL;
     ghttp_status status;
     ghttp_current_status current_status;
-    int http_code;
-    char *buf;
-    int nBodyLen = 0;
-    int nTotalLen = 0;
+    int ReturnCode = 0;
+    int current_body_len = 0;
+    int current_file_wirte = 0;
+    int bytes_save = 0;
+    int FileSize;
+    char *RespBody = NULL;
     FILE* fptr;
-    fptr = fopen("/tmp/http_down.test", "wb");
-    if (fptr == NULL) {
-        LogError("Error to open file!");
-        goto ec;
+    int report_percent = 0;
+
+    if (!_pPath || !_pUrl || strlen(_pUrl) == 0) {
+        printf("Download args error.\n");
+        return ret;
     }
 
-    /* create new request */
     request = ghttp_request_new();
-
-    /* set request*/
-    if(ghttp_set_uri(request, uri) == -1)
+    if (ghttp_set_uri(request, _pUrl) == ghttp_error)
         goto ec;
-    if(ghttp_set_type(request, ghttp_type_get) == -1)
+    printf("Download Url: %s\n", _pUrl);
+    if (ghttp_set_type(request, ghttp_type_get) == ghttp_error)
         goto ec;
-    if(ghttp_set_sync(request, ghttp_async) == -1)
+    if (ghttp_set_sync(request, ghttp_async) == ghttp_error)
         goto ec;
-    ghttp_set_timeout(request, 5);
-    ghttp_set_chunksize(request, 256*1024);
+    ghttp_set_timeout(request, 3);
+    ghttp_set_chunksize(request, l_chunk_size);
 
     /* connect */
     ghttp_prepare(request);
-
+    printf("Download start.\n");
     /* receive */
     do {
         status = ghttp_process(request);
@@ -89,37 +91,81 @@ int test_http_download()
             goto ec;
         }
         current_status = ghttp_get_status(request);
-        LogDebug("ghttp current status: %d, read: %d, total:%d",
-                current_status.proc, current_status.bytes_read, current_status.bytes_total);
+
         switch (current_status.proc) {
         case ghttp_proc_request:
-            LogDebug("Send http request.");
+            printf("Download request send.\n");
             break;
         case ghttp_proc_response_hdrs:
-            LogDebug("Process header.");
+            printf("Download request responsed.\n");
             break;
         case ghttp_proc_response:
-            LogDebug("Downloads.");
+            /* check if return code error */
+            if(!ReturnCode) {
+                ReturnCode = ghttp_status_code(request);
+                printf("Download return code: %d\n", ReturnCode);
+                if (ReturnCode >= 400 || ReturnCode < 200) {
+                    goto ec;
+                }
+                fptr = fopen(_pPath, "wb");
+                if (fptr == NULL) {
+                    printf("Error to open file!\n");
+                    goto ec;
+                }
+            }
+            if ((current_status.bytes_read - bytes_save) >= l_chunk_size) {
+                /* flush buf to resp body and save resp body to file */
+                ghttp_flush_response_buffer(request);
+                current_body_len = ghttp_get_body_len(request);
+                if (current_body_len) {
+                    RespBody = ghttp_get_body(request);
+                    if (!RespBody) {
+                        printf("Get resp body error!\n");
+                        goto fc;
+                    }
+                    current_file_wirte = fwrite(RespBody, 1, current_body_len, fptr);
+                    if (current_file_wirte != current_body_len) {
+                        printf("File write error!\n");
+                        goto fc;
+                    }
+                    bytes_save += current_body_len;
+                }
+            }
+
+            /* print progress */
+            if (current_status.bytes_total > 0) {
+                if (current_status.bytes_read * 100 / current_status.bytes_total >= report_percent + 2) {
+                    report_percent = current_status.bytes_read * 100 / current_status.bytes_total;
+                    printf("Download %02d%% completed.\n", report_percent);
+                }
+            }
+            //usleep(100*1000);
+            break;
+        case ghttp_proc_none:
             break;
         default:
-            break;
+            goto ec;
         }
-
     } while (status != ghttp_done);
 
-    buf = ghttp_get_body(request);
-     if (buf) {
-         nBodyLen = ghttp_get_body_len(request);
-         ret = fwrite(buf, 1, nBodyLen, fptr);
-         if (ret != nBodyLen)
-             goto ec;
-     }
-
-
-    ret = GHTTP_TEST_SUCCESS;
+    /* get buffer remain */
+    current_body_len = ghttp_get_body_len(request);
+    RespBody = ghttp_get_body(request);
+    if (current_body_len && RespBody) {
+        current_file_wirte = fwrite(RespBody, 1, current_body_len, fptr);
+        if (current_file_wirte != current_body_len) {
+            printf("File write error!\n");
+            goto fc;
+        }
+        bytes_save += current_body_len;
+    }
+    printf("Download 100%% completed.\n");
+    printf("File write %d bytes.\n", bytes_save);
+    ret = 0;
+fc:
+    fclose(fptr);
 ec:
     ghttp_request_destroy(request);
-    fclose(fptr);
     return ret;
 }
 
@@ -152,7 +198,9 @@ int main(int argc, const char * argv[])
     }
 
     if (cmdArg.bTestHttpDown) {
-        ret = test_http_download();
+        char *path = "/tmp/test.zip";
+        char *uri = "http://link.router7.com:8091/Cp8ugVw-i8WAJU9EAEnLHjlJfMc620.zip";
+        ret = test_http_download(path, uri);
         if (ret != 0) {
             goto ec;
         }
