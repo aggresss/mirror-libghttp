@@ -199,7 +199,7 @@ int main(int argc, const char * argv[])
 
     if (cmdArg.bTestHttpDown) {
         char *path = "/tmp/test.zip";
-        char *uri = "http://link.router7.com:8091/Cp8ugVw-i8WAJU9EAEnLHjlJfMc620.zip";
+        char *uri = "http://kodo.router7.com/test.zip";
         ret = test_http_download(path, uri);
         if (ret != 0) {
             goto ec;
