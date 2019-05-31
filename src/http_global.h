@@ -30,8 +30,8 @@
 #define HTTP_TRANS_SYNC           0
 #define HTTP_TRANS_ASYNC          1
 
-#if 1
-#include <unistd.h>
+#if 0
+
 #include <stdio.h>
 
 #define malloc(x) malloc(x);\
