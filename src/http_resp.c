@@ -640,7 +640,18 @@ flush_response_body(http_resp *a_resp,
   memset(a_resp->body, 0, a_conn->io_buf_alloc + 1);
   memcpy(a_resp->body, a_conn->io_buf, a_conn->io_buf_alloc);
   /* clean the buffer */
-  http_trans_buf_reset(a_conn);
+  if (a_conn->sync == HTTP_TRANS_ASYNC) {
+    if (a_conn->io_buf)
+      memset(a_conn->io_buf, 0, a_conn->io_buf_len);
+
+    a_conn->io_buf_alloc = 0;
+    a_conn->io_buf_io_done = 0;
+    a_conn->io_buf_io_left = 0;
+  }
+  else {
+    http_trans_buf_reset(a_conn);
+  }
+
 }
 
 void
