@@ -463,12 +463,25 @@ http_trans_read_into_buf(http_trans_conn *a_conn)
       a_conn->io_buf_io_done = 0;
     }
   /* make sure there's enough space */
-  if (http_trans_buf_free(a_conn) < a_conn->io_buf_io_left)
-    {
-      a_conn->io_buf = realloc(a_conn->io_buf,
-			       a_conn->io_buf_len + a_conn->io_buf_io_left);
-      a_conn->io_buf_len += a_conn->io_buf_io_left;
-    }
+  if(a_conn->sync == HTTP_TRANS_ASYNC)
+  {
+      int l_remain = a_conn->io_buf_io_left < a_conn->io_buf_chunksize ? a_conn->io_buf_io_left : a_conn->io_buf_chunksize;
+      int l_reallc_add = a_conn->io_buf_len < a_conn->io_buf_io_left ? a_conn->io_buf_len : a_conn->io_buf_io_left;
+      if (http_trans_buf_free(a_conn) < l_remain)
+      {
+        a_conn->io_buf = realloc(a_conn->io_buf, a_conn->io_buf_len + l_reallc_add);
+        a_conn->io_buf_len += l_reallc_add;
+      }
+  }
+  else
+  {
+      if (http_trans_buf_free(a_conn) < a_conn->io_buf_io_left)
+        {
+          a_conn->io_buf = realloc(a_conn->io_buf,
+                       a_conn->io_buf_len + a_conn->io_buf_io_left);
+          a_conn->io_buf_len += a_conn->io_buf_io_left;
+        }
+  }
   /* check to see how much we should try to read */
   if (a_conn->io_buf_io_left > a_conn->io_buf_chunksize)
     l_bytes_to_read = a_conn->io_buf_chunksize;

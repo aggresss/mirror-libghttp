@@ -1,20 +1,18 @@
 # ------------------------------------------------------------------------------
 # CMakeLists.txt for libghttp
 # ------------------------------------------------------------------------------
-
 cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include(Utilities)
 include(GNUInstallDirs)
 
-project("libghttp" C)
-
 # ------------------------------------------------------------------------------
 # Cross compile
 # ------------------------------------------------------------------------------
 
-if(CROSS_COMPILE AND "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+# MUST before project()
+if(CROSS_COMPILE)
   set(CMAKE_C_COMPILER ${CROSS_COMPILE}-gcc)
   set(CMAKE_CXX_COMPILER ${CROSS_COMPILE}-g++)
   set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
@@ -22,6 +20,12 @@ if(CROSS_COMPILE AND "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
   set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
   set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 endif()
+
+# ------------------------------------------------------------------------------
+# Project
+# ------------------------------------------------------------------------------
+
+project("libghttp" C)
 
 # ------------------------------------------------------------------------------
 # Get and Display infomation
@@ -74,8 +78,8 @@ set(CMAKE_CXX_FLAGS_COVERAGE ${CMAKE_C_FLAGS_COVERAGE})
 # ------------------------------------------------------------------------------
 
 set(LIBGHTTP_VERSION_MAJOR 2)
-set(LIBGHTTP_VERSION_MINOR 0)
-set(LIBGHTTP_VERSION_PATCH 1)
+set(LIBGHTTP_VERSION_MINOR 1)
+set(LIBGHTTP_VERSION_PATCH 0)
 set(LIBGHTTP_RELEASE_VERSION ${LIBGHTTP_VERSION_MAJOR}.${LIBGHTTP_VERSION_MINOR}.${LIBGHTTP_VERSION_PATCH})
 message(STATUS "Libghttp release version: " ${LIBGHTTP_RELEASE_VERSION})
 
