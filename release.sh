@@ -6,12 +6,12 @@ set -e
 # | Arch | SOC | LIBC | GCC version | Toolchain prefix |
 # Notice: Use "none" as placeholder.
 declare -a PLATFORM=( \
-#    "Arm     Hi3518EV200    uclibc  4.8.3   arm-hisiv300-linux               " \
-#    "Arm     Hi3516C        uclibc  4.9.4   arm-hisiv500-linux-uclibcgnueabi " \
-#    "Arm     Mstar316DM     none    4.8.3   arm-linux-gnueabihf-gcc          " \
-#    "Mips    T20            uclibc  4.7.2   mips-linux-uclibc-gnu            " \
-    "x86      Intel          glibc    none   none                             " \
-#    "x64     none           none    none    none                             " \
+    "Arm     Hi3518EV200    uclibc  4.8.3   arm-hisiv300-linux               " \
+    "Arm     Hi3516C        uclibc  4.9.4   arm-hisiv500-linux-uclibcgnueabi " \
+    "Arm     Mstar316DM     none    4.8.3   arm-linux-gnueabihf              " \
+    "Mips    T20            uclibc  4.7.2   mips-linux-uclibc-gnu            " \
+    "x86      none           none    none    none                            " \
+    "x64      none           none    none    none                            " \
 )
 
 declare -a BUILD_TYPE=( \
