@@ -10,8 +10,8 @@ declare -a PLATFORM=( \
     "Arm     Hi3516C        uclibc  4.9.4   arm-hisiv500-linux-uclibcgnueabi " \
     "Arm     Mstar316DM     none    4.8.3   arm-linux-gnueabihf              " \
     "Mips    T20            uclibc  4.7.2   mips-linux-uclibc-gnu            " \
-    "x86      none           none    none    none                            " \
-    "x64      none           none    none    none                            " \
+    "x86     none           none    none    none                             " \
+    "x64     none           none    none    none                             " \
 )
 
 declare -a BUILD_TYPE=( \
@@ -133,7 +133,16 @@ do
     cd ..
 done
 
-cd ..
+cd ${SOURCE_PATH}
+COMMIT_ID=`git rev-parse HEAD`
+
+cd ${RELEASE_PATH}
+echo "Version: ${VERSION}" > release_info.txt
+echo "Commit ID: ${COMMIT_ID}" >> release_info.txt
+echo "MD5:" >> release_info.txt
+ls -1 "*.tar.gz" | xargs md5sum >> release_info.txt
+
+cp -f ${SOURCE_PATH}/CHANGELOG.md ${RELEASE_PATH}/
 
 echo -e "\n${LIGHT}${GREEN}Release version ${VERSION} successful.${NORMAL}\n"
 exit 0
