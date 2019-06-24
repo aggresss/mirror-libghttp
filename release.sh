@@ -140,7 +140,7 @@ cd ${RELEASE_PATH}
 echo "Version: ${VERSION}" > release_info.txt
 echo "Commit ID: ${COMMIT_ID}" >> release_info.txt
 echo "MD5:" >> release_info.txt
-ls -1 "*.tar.gz" | xargs md5sum >> release_info.txt
+ls -1 *.tar.gz | xargs md5sum >> release_info.txt
 
 cp -f ${SOURCE_PATH}/CHANGELOG.md ${RELEASE_PATH}/
 
