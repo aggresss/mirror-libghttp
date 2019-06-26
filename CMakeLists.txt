@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# CMakeLists.txt for libghttp
+# CMakeLists.txt for libghttp Project Top Level
 # ------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 2.8)
 
@@ -59,33 +59,46 @@ endif()
 
 # Default C / CXX flags
 if (NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall ")
-  set(CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS})
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 endif()
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -ggdb -O0 -Wall")
-set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
-
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall -DNDEBUG")
+set(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG  -Wall")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DDEFAULT_LOG_LEVEL=LOG_LEVEL_INFO")
-set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
-
 set(CMAKE_C_FLAGS_COVERAGE "${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
+
+if(NOT CROSS_COMPILE)
+  if(CPACK_ARCH STREQUAL "x64")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m64")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -m64")
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -m64")
+    set(CMAKE_C_FLAGS_COVERAGE "${CMAKE_C_FLAGS_COVERAGE} -m64")
+  elseif(CPACK_ARCH STREQUAL "x86")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -m32")
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -m32")
+    set(CMAKE_C_FLAGS_COVERAGE "${CMAKE_C_FLAGS_COVERAGE} -m32")
+  endif()
+endif()
+
+set(CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS})
+set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_COVERAGE ${CMAKE_C_FLAGS_COVERAGE})
 
 # ------------------------------------------------------------------------------
 # Version
 # ------------------------------------------------------------------------------
 
-set(LIBGHTTP_VERSION_MAJOR 2)
-set(LIBGHTTP_VERSION_MINOR 1)
-set(LIBGHTTP_VERSION_PATCH 0)
-set(LIBGHTTP_RELEASE_VERSION ${LIBGHTTP_VERSION_MAJOR}.${LIBGHTTP_VERSION_MINOR}.${LIBGHTTP_VERSION_PATCH})
-message(STATUS "Libghttp release version: " ${LIBGHTTP_RELEASE_VERSION})
+set(VERSION_MAJOR 2)
+set(VERSION_MINOR 1)
+set(VERSION_PATCH 0)
+set(RELEASE_VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
+message(STATUS "${PROJECT_NAME} release version: " ${RELEASE_VERSION})
 
-get_commit_id(LIBGHTTP_BUILD_VERSION)
-if(LIBGHTTP_BUILD_VERSION)
-  message(STATUS "Libghttp build version: " ${LIBGHTTP_BUILD_VERSION})
+get_commit_id(BUILD_VERSION)
+if(BUILD_VERSION)
+  message(STATUS "${PROJECT_NAME} build version: " ${BUILD_VERSION})
 endif()
 
 # ------------------------------------------------------------------------------
@@ -187,22 +200,45 @@ endif()
 # Pack
 # ------------------------------------------------------------------------------
 
-set(CPACK_PACKAGE_NAME "libghttp")
-set(CPACK_PACKAGE_VENDOR "aggresss")
-set(CPACK_PACKAGE_DESCRIPTION "Libghttp is a HTTP client library for GNOME 1.4")
-set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/aggresss/libghttp")
+set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
+set(CPACK_PACKAGE_VENDOR "${PROJECT_NAME}")
+set(CPACK_PACKAGE_DESCRIPTION "${PROJECT_NAME}")
+set(CPACK_PACKAGE_HOMEPAGE_URL "")
 set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
 set(CPACK_PACKAGE_FILE_README "${PROJECT_SOURCE_DIR}/README.md")
 
-set(CPACK_PACKAGE_VERSION_MAJOR "${LIBGHTTP_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${LIBGHTTP_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${LIBGHTTP_VERSION_PATCH}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${VERSION_PATCH}")
 set(CPACK_PACKAGE_VERSION_FULL "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 
 string(REGEX REPLACE
   "([A-Za-z0-9_\\.]+)\\-([A-Za-z0-9_\\.]+)\\-([A-Za-z0-9_\\.]+)" "\\1-\\2"
   C_COMPILE_ARCH_OS ${C_COMPILER_MACHINE})
+
 set(CPACK_PACKAGE_FILE_NAME
-  ${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_FULL}-${C_COMPILE_ARCH_OS})
+  ${CPACK_PACKAGE_NAME}_v${CPACK_PACKAGE_VERSION_FULL})
+
+if(CPACK_ARCH)
+  set(CPACK_PACKAGE_FILE_NAME
+    ${CPACK_PACKAGE_FILE_NAME}_${CPACK_ARCH})
+endif()
+if(CPACK_SOC)
+  set(CPACK_PACKAGE_FILE_NAME
+    ${CPACK_PACKAGE_FILE_NAME}_${CPACK_SOC})
+endif()
+if(CPACK_LIBC)
+  set(CPACK_PACKAGE_FILE_NAME
+    ${CPACK_PACKAGE_FILE_NAME}_${CPACK_LIBC})
+endif()
+if(CPACK_GCCVER)
+  set(CPACK_PACKAGE_FILE_NAME
+    ${CPACK_PACKAGE_FILE_NAME}_${CPACK_GCCVER})
+endif()
+if(CMAKE_BUILD_TYPE)
+  set(CPACK_PACKAGE_FILE_NAME
+    ${CPACK_PACKAGE_FILE_NAME}_${CMAKE_BUILD_TYPE})
+endif()
+
 set(CPACK_GENERATOR "TGZ")
 include (CPack)
