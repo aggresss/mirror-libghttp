@@ -21,6 +21,27 @@ if(CROSS_COMPILE)
   set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
   set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
   set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+  set(TOOLCHAIN_FILE "${CMAKE_CURRENT_BINARY_DIR}/toolchain.cmake")
+  file(WRITE ${TOOLCHAIN_FILE}
+"# ------------------------------------------------------------------------------
+# toolchain.cmake
+# ------------------------------------------------------------------------------
+
+# this is required
+set(CMAKE_SYSTEM_NAME Linux)
+
+# specify the cross compiler
+set(CMAKE_C_COMPILER ${CROSS_COMPILE}-gcc)
+set(CMAKE_CXX_COMPILER ${CROSS_COMPILE}-g++)
+set(CMAKE_AR ${CROSS_COMPILE}-ar)
+set(CMAKE_RANLIB ${CROSS_COMPILE}-ranlib)
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+\n"
+  )
 endif()
 
 # ------------------------------------------------------------------------------
