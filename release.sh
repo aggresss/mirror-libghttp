@@ -49,8 +49,8 @@ echo -e "${NORMAL}"
 
 # release type
 declare -a BUILD_TYPE=( \
-    "Release" \
     "Debug" \
+    "Release" \
 )
 
 
