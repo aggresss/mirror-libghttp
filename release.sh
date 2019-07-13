@@ -3,22 +3,6 @@
 
 set -e
 
-# | Arch | SOC | LIBC | GCC version | Toolchain prefix |
-# Notice: Use "none" as placeholder.
-declare -a PLATFORM=( \
-    "Arm     Hi3518EV200    uclibc  4.8.3   arm-hisiv300-linux               " \
-    "Arm     Hi3516C        uclibc  4.9.4   arm-hisiv500-linux-uclibcgnueabi " \
-    "Arm     Mstar316DM     none    4.8.3   arm-linux-gnueabihf              " \
-    "Mips    T20            uclibc  4.7.2   mips-linux-uclibc-gnu            " \
-    "x86     none           none    none    none                             " \
-    "x64     none           none    none    none                             " \
-)
-
-declare -a BUILD_TYPE=( \
-    "Release" \
-    "Debug" \
-)
-
 # linux shell color support.
 BLACK="\\033[30m"
 RED="\\033[31m"
@@ -32,11 +16,43 @@ NORMAL="\\033[m"
 LIGHT="\\033[1m"
 INVERT="\\033[7m"
 
+# version
 VERSION=$(head -n1 CHANGELOG.md | awk '{print $2}' | xargs echo)
 if [ "x${VERSION}" = "x" ]; then
     echo -e "${LIGHT}${RED}No release version has been detected.${NORMAL}"
     exit 1
 fi
+
+# release file
+if [[ "$1" ]];then
+    RELEASE_FILE=$1
+else
+    RELEASE_FILE="release.txt"
+fi
+
+if [ ! -f ${RELEASE_FILE} ];then
+    echo -e "${LIGHT}${RED}\nPlease make release file like this:"
+    echo -e "| Arch | SOC | LIBC | GCC Version | Toolchain Prefix | Toolchain Path | Toolchain Sysroot |"
+    echo -e "Notice: Use "none" as placeholder.\n${NORMAL}"
+    exit 1
+fi
+
+declare -a PLATFORM=()
+echo -e "\n${LIGHT}${GREEN}| Arch | SOC | LIBC | GCC Version | Toolchain Prefix | Toolchain Path | Toolchain Sysroot |"
+while IFS= read -r line || [[ "$line" ]]; do
+    if [[ ! $line == \#* ]] && [[ "$line" ]]; then
+        echo "$line";
+        PLATFORM+=("$line")
+    fi
+done < $RELEASE_FILE
+echo -e "${NORMAL}"
+
+# release type
+declare -a BUILD_TYPE=( \
+    "Release" \
+    "Debug" \
+)
+
 
 SOURCE_PATH="${PWD}"
 RELEASE_PATH="${PWD}/release/v${VERSION}"
@@ -57,6 +73,8 @@ do
     LIBC=${ARRAY[2]}
     GCCVER=${ARRAY[3]}
     TOOLCHAIN_PREFIX=${ARRAY[4]}
+    TOOLCHAIN_PATH=${ARRAY[5]}
+    TOOLCHAIN_SYSROOT=${ARRAY[6]}
 
     CMAKE_OPTION=""
     BUILD_DIR=""
@@ -78,6 +96,12 @@ do
     fi
     if [ "${TOOLCHAIN_PREFIX}" != "none" ]; then
         CMAKE_OPTION="${CMAKE_OPTION} -DCROSS_COMPILE=${TOOLCHAIN_PREFIX}"
+    fi
+    if [ "${TOOLCHAIN_PATH}" != "none" ]; then
+        CMAKE_OPTION="${CMAKE_OPTION} -DTOOLCHAIN_PATH=${TOOLCHAIN_PATH}"
+    fi
+    if [ "${TOOLCHAIN_SYSROOT}" != "none" ]; then
+        CMAKE_OPTION="${CMAKE_OPTION} -DCMAKE_SYSROOT=${TOOLCHAIN_SYSROOT}"
     fi
 
     # Strip last "_"
