@@ -115,7 +115,7 @@ do
 
     for B in ${BUILD_TYPE[@]}
     do
-        echo -e "========== BUILD: [${CYAN}${LIGHT}${BUILD_DIR}_${BUILD_TYPE}${NORMAL}] =========="
+        echo -e "========== BUILD: [${CYAN}${LIGHT}${BUILD_DIR}_${B}${NORMAL}] =========="
         if ls ${RELEASE_PATH}/*${BUILD_DIR}_${B}.tar.gz > /dev/null 2>&1; then
             case ${REBUILD_TYPE} in
                 ALL)
