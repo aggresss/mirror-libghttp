@@ -24,6 +24,7 @@ if [ "x${VERSION}" = "x" ]; then
 fi
 
 # release file
+RELEASE_FILE=""
 if [[ "$1" ]];then
     RELEASE_FILE=$1
 else
@@ -53,7 +54,7 @@ declare -a BUILD_TYPE=( \
     "Release" \
 )
 
-
+# build
 SOURCE_PATH="${PWD}"
 RELEASE_PATH="${PWD}/release/v${VERSION}"
 REBUILD_TYPE=""
