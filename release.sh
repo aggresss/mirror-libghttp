@@ -31,15 +31,18 @@ else
     RELEASE_FILE="release.txt"
 fi
 
+RELEASE_TEMPLATE="| Arch | SOC | LIBC | GCC Version | Toolchain Prefix | Toolchain Path | Toolchain Sysroot | Custom Flags |"
 if [ ! -f ${RELEASE_FILE} ];then
     echo -e "${LIGHT}${RED}\nPlease make release file like this:"
-    echo -e "| Arch | SOC | LIBC | GCC Version | Toolchain Prefix | Toolchain Path | Toolchain Sysroot |"
-    echo -e "Notice: Use "none" as placeholder.\n${NORMAL}"
+    echo -e "Notice:" 
+    echo -e "    1. Use \"none\" as placeholder."
+    echo -e "    2. Use \",\" as separator."
+    echo -e "\n${NORMAL}"
     exit 1
 fi
 
 declare -a PLATFORM=()
-echo -e "\n${LIGHT}${GREEN}| Arch | SOC | LIBC | GCC Version | Toolchain Prefix | Toolchain Path | Toolchain Sysroot |"
+echo -e "\n${LIGHT}${GREEN}${RELEASE_TEMPLATE}"
 while IFS= read -r line || [[ "$line" ]]; do
     if [[ ! $line == \#* ]] && [[ "$line" ]]; then
         echo "$line";
@@ -68,14 +71,29 @@ cd build
 
 for P in "${PLATFORM[@]}"
 do
-    declare -a ARRAY=(${P})
-    ARCH=${ARRAY[0]}
-    SOC=${ARRAY[1]}
-    LIBC=${ARRAY[2]}
-    GCCVER=${ARRAY[3]}
-    TOOLCHAIN_PREFIX=${ARRAY[4]}
-    TOOLCHAIN_PATH=${ARRAY[5]}
-    TOOLCHAIN_SYSROOT=${ARRAY[6]}
+    INSTANCE=`echo "${P}" | sed 's/,/\n/g'`
+    INSTANCE_ARG_NUM=`echo "${INSTANCE}" | awk 'END{print NR}'`
+    if [ $INSTANCE_ARG_NUM != 8 ];then
+        echo -e "\n${LIGHT}${RED}Release file arguments error."
+        echo -e "${YELLOW}${P}\n${NORMAL}"
+        exit 1
+    fi
+    ARCH=`echo "${INSTANCE}" | sed -n '1p'`
+    echo "ARCH: ${ARCH}"
+    SOC=`echo "${INSTANCE}" | sed -n '2p'`
+    echo "SOC: ${SOC}"
+    LIBC=`echo "${INSTANCE}" | sed -n '3p'`
+    echo "LIBC: ${LIBC}"
+    GCCVER=`echo "${INSTANCE}" | sed -n '4p'`
+    echo "GCCVER: ${GCCVER}"
+    TOOLCHAIN_PREFIX=`echo "${INSTANCE}" | sed -n '5p'`
+    echo "TOOLCHAIN_PREFIX: ${TOOLCHAIN_PREFIX}"
+    TOOLCHAIN_PATH=`echo "${INSTANCE}" | sed -n '6p'`
+    echo "TOOLCHAIN_PATH: ${TOOLCHAIN_PATH}"
+    TOOLCHAIN_SYSROOT=`echo "${INSTANCE}" | sed -n '7p'`
+    echo "TOOLCHAIN_SYSROOT: ${TOOLCHAIN_SYSROOT}"
+    CUSTOM_FLAGS=`echo "${INSTANCE}" | sed -n '8p'`
+    echo "CUSTOM_FLAGS: ${CUSTOM_FLAGS}"
 
     CMAKE_OPTION=""
     BUILD_DIR=""
@@ -103,6 +121,10 @@ do
     fi
     if [ "${TOOLCHAIN_SYSROOT}" != "none" ]; then
         CMAKE_OPTION="${CMAKE_OPTION} -DCMAKE_SYSROOT=${TOOLCHAIN_SYSROOT}"
+    fi
+    if [ "${CUSTOM_FLAGS}" != "none" ]; then
+        CUSTOM_FLAGS_NO_SPACE=`echo "${CUSTOM_FLAGS}" | sed 's/ /,/g'`
+        CMAKE_OPTION="${CMAKE_OPTION} -DCUSTOM_FLAGS:STRING=${CUSTOM_FLAGS_NO_SPACE}"
     fi
 
     # Strip last "_"
@@ -149,7 +171,7 @@ do
         rm -rf ${B}
         mkdir -p ${B}
         cd ${B}
-        cmake ${SOURCE_PATH} -DCMAKE_BUILD_TYPE=${B} ${CMAKE_OPTION}
+        cmake -DCMAKE_BUILD_TYPE=${B} ${CMAKE_OPTION} ${SOURCE_PATH}
         make package
         cp *${BUILD_DIR}_${B}.tar.gz ${RELEASE_PATH}/
         cd ..

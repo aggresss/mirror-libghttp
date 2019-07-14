@@ -1,10 +1,13 @@
-# | Arch | SOC | LIBC | GCC Version | Toolchain Prefix | Toolchain Path | Toolchain Sysroot |
-# Notice: Use "none" as placeholder.
+# | Arch | SOC | LIBC | GCC Version | Toolchain Prefix | Toolchain Path | Toolchain Sysroot | Custom Flags |
+# Notice: 
+#   1. Use "none" as placeholder.
+#   2. Use "," as separator.
 
-Arm     Hi3518EV200    uclibc  4.8.3   arm-hisiv300-linux                   /root/toolchain/hisilicon/arm-hisiv300-linux/hisi-linux/x86-arm/arm-hisiv300-linux/target/bin/    none
-Arm     Hi3516C        uclibc  4.9.4   arm-hisiv500-linux-uclibcgnueabi-     none    none
-#Arm     Mstar316DM     none    4.8.3   arm-linux-gnueabihf                  none    none
-#Mips    T20            uclibc  4.7.2   mips-linux-uclibc-gnu                none    none
-#x86     none           none    none    none                                 none    none
-x64     none           none    none    none                                 none    none
+#Arm,Hi3518EV200,uclibc,4.8.3,arm-hisiv300-linux,/root/toolchain/hisilicon/arm-hisiv300-linux/hisi-linux/x86-arm/arm-hisiv300-linux/target/bin/,none
+#Arm,Hi3516C,uclibc,4.9.4,arm-hisiv500-linux-uclibcgnueabi-,none,none
+#Arm,Mstar316DM,none,4.8.3,arm-linux-gnueabihf,none,none
+#Mips,T20,uclibc,4.7.2,mips-linux-uclibc-gnu,none,none
+Aarch64,RcarH3,none,none,aarch64-poky-linux,/root/toolchain/poky/sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux,/root/toolchain/poky/sysroots/aarch64-poky-linux,-march=armv8-a -mtune=cortex-a57.cortex-a53
+#x86,none,none,none,none,none,none
+#x64,none,none,none,none,none,none
 
