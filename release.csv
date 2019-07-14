@@ -1,8 +1,8 @@
 # Arch #,# SOC #,# LIBC #,# GCC Version #,# Toolchain Prefix #,# Toolchain Path #,# Toolchain Sysroot #,# Custom Flags #
-#Arm,Hi3518EV200,uclibc,4.8.3,arm-hisiv300-linux,/root/toolchain/hisilicon/arm-hisiv300-linux/hisi-linux/x86-arm/arm-hisiv300-linux/target/bin/,none,none
-#Arm,Hi3516C,uclibc,4.9.4,arm-hisiv500-linux-uclibcgnueabi-,none,none,none
-#Arm,Mstar316DM,none,4.8.3,arm-linux-gnueabihf,none,none,none
-#Mips,T20,uclibc,4.7.2,mips-linux-uclibc-gnu,none,none,none
-Aarch64,RcarH3,glibc,7.3.0,aarch64-poky-linux,/root/toolchain/poky/sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux,/root/toolchain/poky/sysroots/aarch64-poky-linux,-march=armv8-a -mtune=cortex-a57.cortex-a53
-#x86,none,none,none,none,none,none,none
-#x64,none,none,none,none,none,none,none
+Arm,Mstar316DM,none,4.8.3,arm-linux-gnueabihf,/mnt/toolchain/MStar/316DM/arm-linux-gnueabihf-4.8.3-201404/bin,none,none
+Mips,T20,uclibc,4.7.2,mips-linux-uclibc-gnu,/mnt/toolchain/Ingenic/T20/mips-gcc472-glibc216-32bit/bin,none,none
+Arm,Hi3518EV200,uclibc,4.8.3,arm-hisiv300-linux,/mnt/toolchain/HiSilicon/Hi3518E/arm-hisiv300-linux/hisi-linux/x86-arm/arm-hisiv300-linux/target/bin,none,none
+Arm,Hi3516C,uclibc,4.9.4,arm-hisiv500-linux-uclibcgnueabi,/mnt/toolchain/HiSilicon/Hi3516C/arm-hisiv500-linux/bin,none,none
+Aarch64,RcarH3,glibc,7.3.0,aarch64-poky-linux,/mnt/toolchain/Renesas/RCarH3/poky_2.4.2/sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux,/mnt/toolchain/Renesas/RCarH3/poky_2.4.2/sysroots/aarch64-poky-linux,-march=armv8-a -mtune=cortex-a57.cortex-a53
+x86,none,none,none,none,none,none,none
+x64,none,none,none,none,none,none,none
