@@ -28,10 +28,10 @@ RELEASE_FILE=""
 if [[ "$1" ]];then
     RELEASE_FILE=$1
 else
-    RELEASE_FILE="release.txt"
+    RELEASE_FILE="release.csv"
 fi
 
-RELEASE_TEMPLATE="| Arch | SOC | LIBC | GCC Version | Toolchain Prefix | Toolchain Path | Toolchain Sysroot | Custom Flags |"
+RELEASE_TEMPLATE="# Arch #,# SOC #,# LIBC #,# GCC Version #,# Toolchain Prefix #,# Toolchain Path #,# Toolchain Sysroot #,# Custom Flags #"
 if [ ! -f ${RELEASE_FILE} ];then
     echo -e "${LIGHT}${RED}\nPlease make release file like this:"
     echo -e "Notice:" 
@@ -97,32 +97,32 @@ do
 
     CMAKE_OPTION=""
     BUILD_DIR=""
-    if [ "${ARCH}" != "none" ]; then
+    if [ "${ARCH}" != "none" ] && [ "${ARCH}" != "" ]; then
         CMAKE_OPTION="${CMAKE_OPTION} -DCPACK_ARCH=${ARCH}"
         BUILD_DIR="${ARCH}_"
     fi
-    if [ "${SOC}" != "none" ]; then
+    if [ "${SOC}" != "none" ] && [ "${SOC}" != "" ]; then
         CMAKE_OPTION="${CMAKE_OPTION} -DCPACK_SOC=${SOC}"
         BUILD_DIR="${BUILD_DIR}${SOC}_"
     fi
-    if [ "${LIBC}" != "none" ]; then
+    if [ "${LIBC}" != "none" ] && [ "${LIBC}" != "" ]; then
         CMAKE_OPTION="${CMAKE_OPTION} -DCPACK_LIBC=${LIBC}"
         BUILD_DIR="${BUILD_DIR}${LIBC}_"
     fi
-    if [ "${GCCVER}" != "none" ]; then
+    if [ "${GCCVER}" != "none" ] && [ "${GCCVER}" != "" ]; then
         CMAKE_OPTION="${CMAKE_OPTION} -DCPACK_GCCVER=${GCCVER}"
         BUILD_DIR="${BUILD_DIR}${GCCVER}"
     fi
-    if [ "${TOOLCHAIN_PREFIX}" != "none" ]; then
+    if [ "${TOOLCHAIN_PREFIX}" != "none" ] && [ "${TOOLCHAIN_PREFIX}" != "" ]; then
         CMAKE_OPTION="${CMAKE_OPTION} -DCROSS_COMPILE=${TOOLCHAIN_PREFIX}"
     fi
-    if [ "${TOOLCHAIN_PATH}" != "none" ]; then
+    if [ "${TOOLCHAIN_PATH}" != "none" ] && [ "${TOOLCHAIN_PATH}" != "" ]; then
         CMAKE_OPTION="${CMAKE_OPTION} -DTOOLCHAIN_PATH=${TOOLCHAIN_PATH}"
     fi
-    if [ "${TOOLCHAIN_SYSROOT}" != "none" ]; then
+    if [ "${TOOLCHAIN_SYSROOT}" != "none" ] && [ "${TOOLCHAIN_SYSROOT}" != "" ]; then
         CMAKE_OPTION="${CMAKE_OPTION} -DCMAKE_SYSROOT=${TOOLCHAIN_SYSROOT}"
     fi
-    if [ "${CUSTOM_FLAGS}" != "none" ]; then
+    if [ "${CUSTOM_FLAGS}" != "none" ] && [ "${CUSTOM_FLAGS}" != "" ]; then
         CUSTOM_FLAGS_NO_SPACE=`echo "${CUSTOM_FLAGS}" | sed 's/ /,/g'`
         CMAKE_OPTION="${CMAKE_OPTION} -DCUSTOM_FLAGS:STRING=${CUSTOM_FLAGS_NO_SPACE}"
     fi
