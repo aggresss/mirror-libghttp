@@ -45,9 +45,10 @@ fi
 declare -a PLATFORM=()
 echo -e "\n${LIGHT}${GREEN}${RELEASE_TEMPLATE}"
 while IFS= read -r line || [[ "$line" ]]; do
-    if [[ ! $line == \#* ]] && [[ "$line" ]]; then
-        echo "$line";
-        PLATFORM+=("$line")
+    LINE_STRIP=`echo "$line" | sed 's/^[ \t]*//g' | sed 's/[ \t]*$//g' | sed 's/\r\|\|\r\n\|\|\n//g'`
+    if [[ ! $LINE_STRIP == \#* ]] && [[ "$LINE_STRIP" ]]; then
+        echo "$LINE_STRIP";
+        PLATFORM+=("$LINE_STRIP")
     fi
 done < $RELEASE_FILE
 echo -e "${NORMAL}"
