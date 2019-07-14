@@ -79,21 +79,23 @@ do
         echo -e "${YELLOW}${P}\n${NORMAL}"
         exit 1
     fi
-    ARCH=`echo "${INSTANCE}" | sed -n '1p' | sed 's/^[ \t]*//g' | sed 's/[ \t]*$//g'`
+    INSTANCE_STRIP=`echo "${INSTANCE}" | sed 's/^[ \t]*//g' | sed 's/[ \t]*$//g' | sed 's/\r\|\|\r\n\|\|\n//g'`
+
+    ARCH=`echo "${INSTANCE_STRIP}" | sed -n '1p'`
     echo "ARCH: ${ARCH}"
-    SOC=`echo "${INSTANCE}" | sed -n '2p' | sed 's/^[ \t]*//g' | sed 's/[ \t]*$//g'`
+    SOC=`echo "${INSTANCE_STRIP}" | sed -n '2p'`
     echo "SOC: ${SOC}"
-    LIBC=`echo "${INSTANCE}" | sed -n '3p' | sed 's/^[ \t]*//g' | sed 's/[ \t]*$//g'`
+    LIBC=`echo "${INSTANCE_STRIP}" | sed -n '3p'`
     echo "LIBC: ${LIBC}"
-    GCCVER=`echo "${INSTANCE}" | sed -n '4p' | sed 's/^[ \t]*//g' | sed 's/[ \t]*$//g'`
+    GCCVER=`echo "${INSTANCE_STRIP}" | sed -n '4p'`
     echo "GCCVER: ${GCCVER}"
-    TOOLCHAIN_PREFIX=`echo "${INSTANCE}" | sed -n '5p' | sed 's/^[ \t]*//g' | sed 's/[ \t]*$//g'`
+    TOOLCHAIN_PREFIX=`echo "${INSTANCE_STRIP}" | sed -n '5p'`
     echo "TOOLCHAIN_PREFIX: ${TOOLCHAIN_PREFIX}"
-    TOOLCHAIN_PATH=`echo "${INSTANCE}" | sed -n '6p' | sed 's/^[ \t]*//g' | sed 's/[ \t]*$//g'`
+    TOOLCHAIN_PATH=`echo "${INSTANCE_STRIP}" | sed -n '6p'`
     echo "TOOLCHAIN_PATH: ${TOOLCHAIN_PATH}"
-    TOOLCHAIN_SYSROOT=`echo "${INSTANCE}" | sed -n '7p' | sed 's/^[ \t]*//g' | sed 's/[ \t]*$//g'`
+    TOOLCHAIN_SYSROOT=`echo "${INSTANCE_STRIP}" | sed -n '7p'`
     echo "TOOLCHAIN_SYSROOT: ${TOOLCHAIN_SYSROOT}"
-    CUSTOM_FLAGS=`echo "${INSTANCE}" | sed -n '8p' | sed 's/^[ \t]*//g' | sed 's/[ \t]*$//g' | sed 's/\r\|\|\r\n\|\|\n//g'`
+    CUSTOM_FLAGS=`echo "${INSTANCE_STRIP}" | sed -n '8p'`
     echo "CUSTOM_FLAGS: ${CUSTOM_FLAGS}"
 
     CMAKE_OPTION=""
