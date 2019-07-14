@@ -177,7 +177,7 @@ do
         cd ${B}
         CMAKE_EXECUTE="cmake -DCMAKE_BUILD_TYPE=${B} ${CMAKE_OPTION} ${SOURCE_PATH}"
         eval ${CMAKE_EXECUTE}
-        echo -e "\n${LIGHT}${GREEN}${CMAKE_EXECUTE}${NORMAL}\n"
+        echo -e "\n${LIGHT}${YELLOW}${CMAKE_EXECUTE}${NORMAL}\n"
         make package
         cp *${BUILD_DIR}_${B}.tar.gz ${RELEASE_PATH}/
         cd ..
