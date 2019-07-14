@@ -34,10 +34,11 @@ fi
 RELEASE_TEMPLATE="# Arch #,# SOC #,# LIBC #,# GCC Version #,# Toolchain Prefix #,# Toolchain Path #,# Toolchain Sysroot #,# Custom Flags #"
 if [ ! -f ${RELEASE_FILE} ];then
     echo -e "${LIGHT}${RED}\nPlease make release file like this:"
-    echo -e "Notice:" 
+    echo -e "${YELLOW}${RELEASE_TEMPLATE}"
+    echo -e "${NORMAL}Notice:"
     echo -e "    1. Use \"none\" as placeholder."
     echo -e "    2. Use \",\" as separator."
-    echo -e "\n${NORMAL}"
+    echo -e "\n"
     exit 1
 fi
 
@@ -193,3 +194,4 @@ cp -f ${SOURCE_PATH}/CHANGELOG.md ${RELEASE_PATH}/
 
 echo -e "\n${LIGHT}${GREEN}Release version ${VERSION} successful.${NORMAL}\n"
 exit 0
+
