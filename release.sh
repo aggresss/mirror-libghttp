@@ -93,7 +93,7 @@ do
     echo "TOOLCHAIN_PATH: ${TOOLCHAIN_PATH}"
     TOOLCHAIN_SYSROOT=`echo "${INSTANCE}" | sed -n '7p'`
     echo "TOOLCHAIN_SYSROOT: ${TOOLCHAIN_SYSROOT}"
-    CUSTOM_FLAGS=`echo "${INSTANCE}" | sed -n '8p'`
+    CUSTOM_FLAGS=`echo "${INSTANCE}" | sed -n '8p' | sed 's/\r\|\|\r\n\|\|\n//g'`
     echo "CUSTOM_FLAGS: ${CUSTOM_FLAGS}"
 
     CMAKE_OPTION=""
@@ -125,7 +125,8 @@ do
     fi
     if [ "${CUSTOM_FLAGS}" != "none" ] && [ "${CUSTOM_FLAGS}" != "" ]; then
         CUSTOM_FLAGS_NO_SPACE=`echo "${CUSTOM_FLAGS}" | sed 's/ /,/g'`
-        CMAKE_OPTION="${CMAKE_OPTION} -DCUSTOM_FLAGS:STRING=${CUSTOM_FLAGS_NO_SPACE}"
+        echo "${CUSTOM_FLAGS_NO_SPACE}"
+        CMAKE_OPTION="${CMAKE_OPTION} -DCUSTOM_FLAGS=${CUSTOM_FLAGS_NO_SPACE}"
     fi
 
     # Strip last "_"
@@ -172,7 +173,10 @@ do
         rm -rf ${B}
         mkdir -p ${B}
         cd ${B}
-        cmake -DCMAKE_BUILD_TYPE=${B} ${CMAKE_OPTION} ${SOURCE_PATH}
+        CMAKE_EXECUTE="cmake -DCMAKE_BUILD_TYPE=${B} ${CMAKE_OPTION} ${SOURCE_PATH}"
+        eval ${CMAKE_EXECUTE}
+        echo -e "${LIGHT}${GREEN}${CMAKE_EXECUTE}${NORMAL}"
+
         make package
         cp *${BUILD_DIR}_${B}.tar.gz ${RELEASE_PATH}/
         cd ..
