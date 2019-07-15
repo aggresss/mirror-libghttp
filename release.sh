@@ -128,7 +128,6 @@ do
     fi
     if [ "${CUSTOM_FLAGS}" != "none" ] && [ "${CUSTOM_FLAGS}" != "" ]; then
         CUSTOM_FLAGS_NO_SPACE=`echo "${CUSTOM_FLAGS}" | sed 's/ /,/g'`
-        echo "${CUSTOM_FLAGS_NO_SPACE}"
         CMAKE_OPTION="${CMAKE_OPTION} -DCUSTOM_FLAGS=${CUSTOM_FLAGS_NO_SPACE}"
     fi
 
