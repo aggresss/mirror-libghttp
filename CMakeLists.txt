@@ -36,6 +36,7 @@ if(CROSS_COMPILE)
     find_program(CMAKE_RANLIB ${CROSS_COMPILE_NO_MINUS}-ranlib)
   endif(TOOLCHAIN_PATH)
 
+  set(TOOLCHAIN_FILE "${CMAKE_CURRENT_BINARY_DIR}/toolchain.cmake")
   file(WRITE ${TOOLCHAIN_FILE}
 "# ------------------------------------------------------------------------------
 # toolchain.cmake
@@ -51,7 +52,6 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 \n"
   )
-  set(TOOLCHAIN_FILE "${CMAKE_CURRENT_BINARY_DIR}/toolchain.cmake")
 
 endif(CROSS_COMPILE)
 
