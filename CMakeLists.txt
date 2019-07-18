@@ -169,6 +169,31 @@ elseif(ssl_options_count GREATER "1")
 endif()
 
 # ------------------------------------------------------------------------------
+# ExternalProject
+# ------------------------------------------------------------------------------
+
+#set{EXTERNAL_POJECT_1 xxx}
+#ExternalProject_Add(${EXTERNAL_POJECT_1}
+#  SOURCE_DIR ${CMAKE_SOURCE_DIR}/${EXTERNAL_POJECT_1}
+#  CMAKE_ARGS
+#    -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_BINARY_DIR}/${EXTERNAL_POJECT_1}
+#    -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+#    -DCROSS_COMPILE=${CROSS_COMPILE}
+#    -DTOOLCHAIN_PATH=${TOOLCHAIN_PATH}
+#    -DCMAKE_SYSROOT=${CMAKE_SYSROOT}
+#    -DCUSTOM_FLAGS=${CUSTOM_FLAGS}
+#  TEST_COMMAND ""
+#  )
+#set(EXTERNAL_POJECT_1_PREFIX ${PROJECT_BINARY_DIR}/${EXTERNAL_POJECT_1})
+#
+#install(DIRECTORY ${EXTERNAL_POJECT_1_PREFIX}/include/
+#  DESTINATION include
+#  )
+#install(DIRECTORY ${EXTERNAL_POJECT_1_PREFIX}/lib/
+#  DESTINATION lib
+#  )
+
+# ------------------------------------------------------------------------------
 # Document
 # ------------------------------------------------------------------------------
 
