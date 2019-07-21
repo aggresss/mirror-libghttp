@@ -85,7 +85,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && \
     echo "#!/bin/bash" > /usr/local/bin/docker-entrypoint.sh && \
     sed -r -e 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/cron && \
-    echo "/etc/init.d/cron start" >> /usr/local/bin/docker-entrypoint.sh && \
+    echo "sudo /etc/init.d/cron start" >> /usr/local/bin/docker-entrypoint.sh && \
     echo "sudo supervisord -c /etc/supervisor/supervisord.conf" >> /usr/local/bin/docker-entrypoint.sh && \
     echo "exec \"\$@\"" >> /usr/local/bin/docker-entrypoint.sh && \
     chmod 755 /usr/local/bin/docker-entrypoint.sh
