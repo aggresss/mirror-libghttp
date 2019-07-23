@@ -10,7 +10,7 @@ script:
   - cmake -DCMAKE_BUILD_TYPE:String="Coverage" .
   - make
   - ctest -T Test --timeout 600 -VV
-  - ctest -T MemCheck --timeout 600 -VV
+  - ctest -T MemCheck --timeout 600
   - cat Testing/Temporary/MemoryChecker.*.log || exit 0
   - coveralls --include src/  --exclude deps/ --gcov-options '\-lp' || exit 0
 
