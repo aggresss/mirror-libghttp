@@ -227,9 +227,9 @@ if(ENABLE_TESTING)
     set(MEMORYCHECK_COMMAND ${VALGRIND})
     # Check process children and give detail for each leak
     set(MEMORYCHECK_COMMAND_OPTIONS
-      "${MEMORYCHECK_COMMAND_OPTIONS} --leak-check=yes --show-reachable=yes")
+      "${MEMORYCHECK_COMMAND_OPTIONS} --leak-check=yes --show-reachable=no --undef-value-errors=no")
     set(MEMORYCHECK_COMMAND_OPTIONS
-      "${MEMORYCHECK_COMMAND_OPTIONS} --trace-children=yes --track-fds=yes")
+      "${MEMORYCHECK_COMMAND_OPTIONS} --trace-children=yes --track-fds=no --track-origins=no")
     # Set error code.
     set(MEMORYCHECK_COMMAND_OPTIONS
       "${MEMORYCHECK_COMMAND_OPTIONS} --error-exitcode=255")
