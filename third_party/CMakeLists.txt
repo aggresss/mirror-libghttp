@@ -4,16 +4,16 @@
 
 include(ExternalProject)
 
-if(WITH_STATIC)
-  set(THIRDPARTY_WITH_STATIC "yes")
+if(BUILD_STATIC)
+  set(THIRDPARTY_BUILD_STATIC "yes")
 else()
-  set(THIRDPARTY_WITH_STATIC "no")
+  set(THIRDPARTY_BUILD_STATIC "no")
 endif()
 
-if(WITH_SHARED)
-  set(THIRDPARTY_WITH_SHARED "yes")
+if(BUILD_SHARED)
+  set(THIRDPARTY_BUILD_SHARED "yes")
 else()
-  set(THIRDPARTY_WITH_SHARED "no")
+  set(THIRDPARTY_BUILD_SHARED "no")
 endif()
 
 if(WITH_WOLFSSL)
@@ -26,8 +26,8 @@ if(WITH_WOLFSSL)
       ./configure
         CC=${CMAKE_C_COMPILER}
         CXX=${CMAKE_CXX_COMPILER}
-        --enable-static=${THIRDPARTY_WITH_STATIC}
-        --enable-shared=${THIRDPARTY_WITH_SHARED}
+        --enable-static=${THIRDPARTY_BUILD_STATIC}
+        --enable-shared=${THIRDPARTY_BUILD_SHARED}
         --disable-debug
         --host=${C_COMPILER_MACHINE}
         --prefix=${WOLFSSL_PREFIX}

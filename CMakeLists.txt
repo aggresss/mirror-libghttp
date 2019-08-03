@@ -129,10 +129,10 @@ endif()
 # target static and shared
 # ------------------------------------------------------------------------------
 
-option(WITH_STATIC "Build static library." ON)
-option(WITH_SHARED "Build shared library." OFF)
+option(BUILD_STATIC "Build static library." ON)
+option(BUILD_SHARED "Build shared library." OFF)
 
-if (NOT WITH_STATIC AND NOT WITH_SHARED)
+if (NOT BUILD_STATIC AND NOT BUILD_SHARED)
   message(FATAL_ERROR "Need to choose static or shared build!")
 endif()
 
