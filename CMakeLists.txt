@@ -62,6 +62,20 @@ endif(CROSS_COMPILE)
 project("libghttp" C)
 
 # ------------------------------------------------------------------------------
+# OS Specific
+# ------------------------------------------------------------------------------
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  set(WINDOWS TRUE)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  set(LINUX TRUE)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  set(OSX TRUE)
+else()
+  message(DEPRECATION "No support for system: " ${CMAKE_SYSTEM_NAME})
+endif()
+
+# ------------------------------------------------------------------------------
 # Get and Display infomation
 # ------------------------------------------------------------------------------
 
