@@ -66,11 +66,12 @@ project("libghttp" C)
 # ------------------------------------------------------------------------------
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  set(WINDOWS TRUE)
-elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(LINUX TRUE)
+  message(STATUS "Support for system: " ${CMAKE_SYSTEM_NAME})
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  message(STATUS "Support for system: " ${CMAKE_SYSTEM_NAME})
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  set(OSX TRUE)
+  message(STATUS "Support for system: " ${CMAKE_SYSTEM_NAME})
 else()
   message(DEPRECATION "No support for system: " ${CMAKE_SYSTEM_NAME})
 endif()
@@ -149,6 +150,15 @@ option(BUILD_SHARED "Build shared library." OFF)
 if (NOT BUILD_STATIC AND NOT BUILD_SHARED)
   message(FATAL_ERROR "Need to choose static or shared build!")
 endif()
+
+# ------------------------------------------------------------------------------
+# Configuration file
+# ------------------------------------------------------------------------------
+
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/config.h"
+    @ONLY)
 
 # ------------------------------------------------------------------------------
 # SSL/TLS feature

@@ -1,0 +1,20 @@
+#ifndef __CONFIG_H__
+#define __CONFIG_H__
+
+/* Version */
+#cmakedefine RELEASE_VERSION "@RELEASE_VERSION@"
+#cmakedefine BUILD_VERSION   "@BUILD_VERSION@"
+
+/* Project Directory */
+#cmakedefine PROJECT_SOURCE_DIR "@PROJECT_SOURCE_DIR@"
+#cmakedefine PROJECT_BINARY_DIR "@PROJECT_BINARY_DIR@"
+
+/* Compile Options */
+#cmakedefine WITH_TLS
+
+/* Operate System */
+#cmakedefine WIN32
+#cmakedefine APPLE
+#cmakedefine LINUX
+
+#endif /* __CONFIG_H__ */
