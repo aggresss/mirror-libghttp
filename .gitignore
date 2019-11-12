@@ -1,6 +1,6 @@
 # .gitignore for aggresss/libghttp
-build/
-release/
+/build/
+/release/
 /doc/html
 /doc/latex
 
