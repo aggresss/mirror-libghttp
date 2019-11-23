@@ -15,6 +15,6 @@
 /* Operate System */
 #cmakedefine WIN32
 #cmakedefine APPLE
-#cmakedefine LINUX
+#cmakedefine UNIX
 
 #endif /* __CONFIG_H__ */
