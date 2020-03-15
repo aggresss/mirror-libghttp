@@ -8,6 +8,16 @@
 
 ---
 
+### Build
+
+```
+git clone https://github.com/aggresss/libghttp.git
+cd libghttp
+cmake . -Bbuild
+make -C build
+
+```
+
 ### Infrasturcture:
 
 - [x] Fork from http://ftp.gnome.org/pub/GNOME/sources/libghttp/1.0/libghttp-1.0.9.tar.gz
