@@ -3,6 +3,13 @@
 # ------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 2.8)
 
+
+# You probably should not build things in tree anyway
+if (CMAKE_BINARY_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  message(FATAL_ERROR "Building in-source is not supported! Create a build dir and remove ${CMAKE_SOURCE_DIR}/CMakeCache.txt")
+endif()
+
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include(Utilities)
 include(GNUInstallDirs)
